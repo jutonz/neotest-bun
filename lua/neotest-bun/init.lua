@@ -1,7 +1,9 @@
 local main = require("neotest-bun.main")
 local config = require("neotest-bun.config")
 
-local NeotestBun = {}
+local NeotestBun = {
+  name = "neotest-bun",
+}
 
 --- Toggle the plugin by calling the `enable`/`disable` methods respectively.
 function NeotestBun.toggle()
