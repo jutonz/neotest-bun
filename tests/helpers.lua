@@ -189,4 +189,12 @@ Helpers.new_child_neovim = function()
   return child
 end
 
+Helpers.getCurrentPath = function()
+  -- Use debug.getinfo to get the source of the current function
+  local info = debug.getinfo(2, "S")
+  -- Remove the leading '@' character from the source
+  local source = info.source:sub(2)
+  return source
+end
+
 return Helpers

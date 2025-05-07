@@ -17,22 +17,22 @@ local T = MiniTest.new_set({
   },
 })
 
--- Tests related to the `setup` method.
 T["bun.fileExists()"] = MiniTest.new_set()
 T["bun.isBunProject()"] = MiniTest.new_set()
 
 T["bun.fileExists()"]["is true if the file exists"] = function()
-  -- child.lua([[require('neotest-bun/util/bun').fileExists('123.txt')]])
+  local path = Helpers.getCurrentPath()
   MiniTest.expect.equality(
-    bun.fileExists("/Users/jutonz/code/jutonz/test-lua-plugin/neovim-plugin-boilerplate/tests/util/test_bun.lua"),
+    bun.fileExists(path),
     true
   )
 end
 
 T["bun.fileExists()"]["is false if the file doesn't exist"] = function()
-  -- child.lua([[require('neotest-bun/util/bun').fileExists('123.txt')]])
+  local path = Helpers.getCurrentPath()
+  path = string.gsub(path, ".lua", ".luaf")
   MiniTest.expect.equality(
-    bun.fileExists("/Users/jutonz/code/jutonz/test-lua-plugin/neovim-plugin-boilerplate/tests/util/test_bun.luaf"),
+    bun.fileExists(path),
     false
   )
 end
