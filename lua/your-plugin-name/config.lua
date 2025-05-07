@@ -8,8 +8,8 @@ local YourPluginName = {}
 --- Default values:
 ---@eval return MiniDoc.afterlines_to_code(MiniDoc.current.eval_section)
 YourPluginName.options = {
-    -- Prints useful logs about what event are triggered, and reasons actions are executed.
-    debug = false,
+  -- Prints useful logs about what event are triggered, and reasons actions are executed.
+  debug = false,
 }
 
 ---@private
@@ -21,16 +21,15 @@ local defaults = vim.deepcopy(YourPluginName.options)
 ---
 ---@private
 function YourPluginName.defaults(options)
-    YourPluginName.options =
-        vim.deepcopy(vim.tbl_deep_extend("keep", options or {}, defaults or {}))
+  YourPluginName.options = vim.deepcopy(vim.tbl_deep_extend("keep", options or {}, defaults or {}))
 
-    -- let your user know that they provided a wrong value, this is reported when your plugin is executed.
-    assert(
-        type(YourPluginName.options.debug) == "boolean",
-        "`debug` must be a boolean (`true` or `false`)."
-    )
+  -- let your user know that they provided a wrong value, this is reported when your plugin is executed.
+  assert(
+    type(YourPluginName.options.debug) == "boolean",
+    "`debug` must be a boolean (`true` or `false`)."
+  )
 
-    return YourPluginName.options
+  return YourPluginName.options
 end
 
 --- Define your your-plugin-name setup.
@@ -39,11 +38,11 @@ end
 ---
 ---@usage `require("your-plugin-name").setup()` (add `{}` with your |YourPluginName.options| table)
 function YourPluginName.setup(options)
-    YourPluginName.options = YourPluginName.defaults(options or {})
+  YourPluginName.options = YourPluginName.defaults(options or {})
 
-    log.warn_deprecation(YourPluginName.options)
+  log.warn_deprecation(YourPluginName.options)
 
-    return YourPluginName.options
+  return YourPluginName.options
 end
 
 return YourPluginName
