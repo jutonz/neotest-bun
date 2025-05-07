@@ -1,5 +1,5 @@
-YourPluginName.disable()	neovim-plugin-boilerplate.txt	/*YourPluginName.disable()*
-YourPluginName.enable()	neovim-plugin-boilerplate.txt	/*YourPluginName.enable()*
-YourPluginName.options	neovim-plugin-boilerplate.txt	/*YourPluginName.options*
-YourPluginName.setup()	neovim-plugin-boilerplate.txt	/*YourPluginName.setup()*
-YourPluginName.toggle()	neovim-plugin-boilerplate.txt	/*YourPluginName.toggle()*
+NeotestBun.disable()	neovim-plugin-boilerplate.txt	/*NeotestBun.disable()*
+NeotestBun.enable()	neovim-plugin-boilerplate.txt	/*NeotestBun.enable()*
+NeotestBun.options	neovim-plugin-boilerplate.txt	/*NeotestBun.options*
+NeotestBun.setup()	neovim-plugin-boilerplate.txt	/*NeotestBun.setup()*
+NeotestBun.toggle()	neovim-plugin-boilerplate.txt	/*NeotestBun.toggle()*

@@ -45,16 +45,16 @@ fi
 echo -e "Username:    \033[1;32m$USERNAME\033[0m\nRepository:  \033[1;32m$REPOSITORY_NAME\033[0m\nPlugin:      \033[1;32m$PLUGIN_NAME\033[0m\n\n\tRenaming placeholder files..."
 
 rm -rf doc
-mv plugin/your-plugin-name.lua plugin/$PLUGIN_NAME.lua
-mv lua/your-plugin-name lua/$PLUGIN_NAME
+mv plugin/neotest-bun.lua plugin/$PLUGIN_NAME.lua
+mv lua/neotest-bun lua/$PLUGIN_NAME
 mv README_TEMPLATE.md README.md
 
 echo -e "\tReplacing placeholder names..."
 
 PASCAL_CASE_PLUGIN_NAME=$(echo "$PLUGIN_NAME" | perl -pe 's/(^|-)./uc($&)/ge;s/-//g')
 
-grep -rl "YourPluginName" .github/ plugin/ tests/ lua/ | xargs sed -i "" -e "s/YourPluginName/$PASCAL_CASE_PLUGIN_NAME/g"
-grep -rl "your-plugin-name" README.md .github/ plugin/ tests/ lua/ | xargs sed -i "" -e "s/your-plugin-name/$PLUGIN_NAME/g"
+grep -rl "NeotestBun" .github/ plugin/ tests/ lua/ | xargs sed -i "" -e "s/NeotestBun/$PASCAL_CASE_PLUGIN_NAME/g"
+grep -rl "neotest-bun" README.md .github/ plugin/ tests/ lua/ | xargs sed -i "" -e "s/neotest-bun/$PLUGIN_NAME/g"
 grep -rl "YOUR_GITHUB_USERNAME" README.md .github/ | xargs sed -i "" -e "s/YOUR_GITHUB_USERNAME/$USERNAME/g"
 grep -rl "YOUR_REPOSITORY_NAME" README.md .github/ | xargs sed -i "" -e "s/YOUR_REPOSITORY_NAME/$REPOSITORY_NAME/g"
 

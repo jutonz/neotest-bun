@@ -80,8 +80,8 @@ USERNAME=my-github-username PLUGIN_NAME=my-awesome-plugin REPOSITORY_NAME=my-awe
 
 ```sh
 rm -rf doc
-mv plugin/your-plugin-name.lua plugin/my-awesome-plugin.lua
-mv lua/your-plugin-name lua/my-awesome-plugin
+mv plugin/neotest-bun.lua plugin/my-awesome-plugin.lua
+mv lua/neotest-bun lua/my-awesome-plugin
 mv README_TEMPLATE.md README.md 
 mv .github/ISSUE_TEMPLATE/Bug_report_template.yml .github/ISSUE_TEMPLATE/Bug_report.yml
 
@@ -90,11 +90,11 @@ mv .github/ISSUE_TEMPLATE/Bug_report_template.yml .github/ISSUE_TEMPLATE/Bug_rep
 ##### Search and replace placeholder occurrences:
 
 ```vim
-:vimgrep /YourPluginName/ **/*
-:cfdo %s/YourPluginName/MyAwesomePlugin/g | update
+:vimgrep /NeotestBun/ **/*
+:cfdo %s/NeotestBun/MyAwesomePlugin/g | update
 
-:vimgrep /your-plugin-name/ **/* .github/**
-:cfdo %s/your-plugin-name/my-awesome-plugin/g | update
+:vimgrep /neotest-bun/ **/* .github/**
+:cfdo %s/neotest-bun/my-awesome-plugin/g | update
 
 :vimgrep /YOUR_GITHUB_USERNAME/ .github/** **/*.md
 :cfdo %s/YOUR_GITHUB_USERNAME/shortcuts/g | update
