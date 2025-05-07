@@ -38,22 +38,20 @@ T["bun.fileExists()"]["is false if the file doesn't exist"] = function()
 end
 
 T["bun.isBunProject()"]["is true if bun.lock exists at the root of the working directory"] = function()
-  child.cmd("cd /Users/jutonz/code/jutonz/test-lua-plugin/neovim-plugin-boilerplate/tests/fixtures/dir-with-bun-lock")
+  local path = Helpers.getFixturePath("dir-with-bun-lock/")
+  child.cmd("cd " .. path)
+
   local isBunProject = child.lua_get([[ require("neotest-bun/util/bun").isBunProject() ]])
-  -- child.lua([[ _G.isBunProject = require("neotest-bun/util/bun").isBunProject() ]])
-  -- local isBunProject = child.lua_get("_G.isBunProject")
-  -- local response = child.cmd_capture("pwd")
-  -- local response = child.lua([[
-  --   vim.cmd("")
-  --   vim.cmd("pwd")
-  -- ]])
-  --
+
   MiniTest.expect.equality(isBunProject, true)
 end
 
 T["bun.isBunProject()"]["is false if no bun.lock exists at the root of the working directory"] = function()
-  child.cmd("cd /Users/jutonz/code/jutonz/test-lua-plugin/neovim-plugin-boilerplate/tests")
+  local path = Helpers.getFixturePath()
+  child.cmd("cd " .. path)
+
   local isBunProject = child.lua_get([[ require("neotest-bun/util/bun").isBunProject() ]])
+
   MiniTest.expect.equality(isBunProject, false)
 end
 

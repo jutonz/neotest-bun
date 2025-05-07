@@ -1,5 +1,6 @@
 local main = require("neotest-bun.main")
 local config = require("neotest-bun.config")
+local lib = require("neotest/lib")
 
 local NeotestBun = {
   name = "neotest-bun",
@@ -31,6 +32,10 @@ end
 -- setup NeotestBun options and merge them with user provided ones.
 function NeotestBun.setup(opts)
   _G.NeotestBun.config = config.setup(opts)
+end
+
+NeotestBun.root = function(path)
+  return lib.files.match_root_pattern("bun.lock")(path)
 end
 
 _G.NeotestBun = NeotestBun

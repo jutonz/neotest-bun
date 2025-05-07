@@ -191,10 +191,19 @@ end
 
 Helpers.getCurrentPath = function()
   -- Use debug.getinfo to get the source of the current function
-  local info = debug.getinfo(2, "S")
+  local info = debug.getinfo(1, "S")
   -- Remove the leading '@' character from the source
   local source = info.source:sub(2)
-  return source
+
+  local currentDir = io.popen("pwd"):read("*l")
+
+  return currentDir .. "/" .. source
+end
+
+Helpers.getFixturePath = function(path)
+  local filePath = Helpers.getCurrentPath()
+  local fixturesPath = string.gsub(filePath, "helpers.lua", "fixtures/")
+  return fixturesPath .. (path or "")
 end
 
 return Helpers
