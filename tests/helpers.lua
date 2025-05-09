@@ -206,4 +206,19 @@ Helpers.getFixturePath = function(path)
   return fixturesPath .. (path or "")
 end
 
+Helpers.readFixtureFile = function(path)
+  local fixturePath = Helpers.getFixturePath(path)
+  local file = io.open(fixturePath, "r")
+
+  if not file then
+    return ""
+  end
+
+  local content = file:read("*all")
+
+  file:close()
+
+  return content
+end
+
 return Helpers

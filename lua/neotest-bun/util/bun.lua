@@ -1,3 +1,6 @@
+local xml2lua = require("xml2lua")
+local logger = require("neotest.logging")
+
 local bun = {}
 
 function bun.fileExists(filename)
@@ -16,25 +19,130 @@ function bun.isBunProject()
 end
 
 function bun.escapeTestPattern(s)
-  return s
-  -- return (
-  --   s:gsub("%(", "%\\(")
-  --     :gsub("%)", "%\\)")
-  --     :gsub("%]", "%\\]")
-  --     :gsub("%[", "%\\[")
-  --     :gsub("%*", "%\\*")
-  --     :gsub("%+", "%\\+")
-  --     :gsub("%-", "%\\-")
-  --     :gsub("%?", "%\\?")
-  --     :gsub("%$", "%\\$")
-  --     :gsub("%^", "%\\^")
-  --     :gsub("%/", "%\\/")
-  --     :gsub("%'", "%\\'")
-  -- )
+  return (
+    s:gsub("%(", "%\\(")
+    :gsub("%)", "%\\)")
+    :gsub("%]", "%\\]")
+    :gsub("%[", "%\\[")
+    :gsub("%*", "%\\*")
+    :gsub("%+", "%\\+")
+    :gsub("%-", "%\\-")
+    :gsub("%?", "%\\?")
+    :gsub("%$", "%\\$")
+    :gsub("%^", "%\\^")
+    :gsub("%/", "%\\/")
+    :gsub("%'", "%\\'")
+  )
 end
 
-function bun.parsedJsonToResults(data, output_file, consoleOut)
+-- {
+--   testsuites = {
+--     _attr = {
+--       assertions = "9",
+--       failures = "0",
+--       name = "bun test",
+--       skipped = "0",
+--       tests = "5",
+--       time = "0.977182"
+--     },
+--     testsuite = {
+--       _attr = {
+--         assertions = "9",
+--         failures = "0",
+--         hostname = "Justins-MacBook-Pro.local",
+--         name = "test/frontend/pages/Providers/Index.test.tsx",
+--         skipped = "0",
+--         tests = "5",
+--         time = "0.396"
+--       },
+--       testcase = { {
+--           _attr = {
+--             assertions = "1",
+--             classname = "Index",
+--             file = "test/frontend/pages/Providers/Index.test.tsx",
+--             name = "renders a list of Providers",
+--             time = "0.028809"
+--           }
+--         }, {
+--           _attr = {
+--             assertions = "5",
+--             classname = "Index",
+--             file = "test/frontend/pages/Providers/Index.test.tsx",
+--             name = "renders attributes of a provider",
+--             time = "0.147854"
+--           }
+--         }, {
+--           _attr = {
+--             assertions = "1",
+--             classname = "Index",
+--             file = "test/frontend/pages/Providers/Index.test.tsx",
+--             name = "marks all providers as Active",
+--             time = "0.067235"
+--           }
+--         }, {
+--           _attr = {
+--             assertions = "1",
+--             classname = "Index",
+--             file = "test/frontend/pages/Providers/Index.test.tsx",
+--             name = "has an empty state if there are no providers",
+--             time = "0.054429"
+--           }
+--         }, {
+--           _attr = {
+--             assertions = "1",
+--             classname = "Index",
+--             file = "test/frontend/pages/Providers/Index.test.tsx",
+--             name = "paginates if there are more than 25 providers",
+--             time = "0.100357"
+--           }
+--         } }
+--     }
+--   }
+-- }
+--
+function bun.xmlToResults(root, xml, xmlOutputFile, commandOutputFile)
   local tests = {}
+
+  local handler = require("xmlhandler.tree")
+  local parser = xml2lua.parser(handler)
+  parser:parse(xml)
+
+  -- if commandOutputFile then
+  --   local file = io.open(commandOutputFile, "r")
+  --   logger.debug(file:read("*all"))
+  --   file:close()
+  -- end
+
+  -- vim.print(handler.root.testsuites.testsuite.testcase)
+  -- logger.debug(xml)
+  -- logger.debug(vim.inspect(handler.root))
+
+  -- local file = io.open("/users/jutonz/desktop/hi.xml", "w")
+  -- file:write(xml)
+  -- file:close()
+
+  for _, testsuite in ipairs(handler.root.testsuites) do
+    for _, testcase in ipairs(testsuite.testsuite.testcase) do
+      local attrs = testcase._attr
+      local status = nil
+
+      if testcase.failure then
+        status = "failed"
+      elseif testcase.skipped then
+        status = "skipped"
+      else
+        status = "passed"
+      end
+
+      local key = root .. "/" .. attrs.file .. "::" .. attrs.classname .. "::" .. attrs.name
+
+      tests[key] = {
+        status = status,
+      }
+    end
+  end
+
+  -- for _, testresult in handler.root.testsuites
 
   -- for _, testResult in pairs(data.testResults) do
   --   local testFn = testResult.name

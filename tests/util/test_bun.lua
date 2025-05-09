@@ -19,6 +19,7 @@ local T = MiniTest.new_set({
 
 T["bun.fileExists()"] = MiniTest.new_set()
 T["bun.isBunProject()"] = MiniTest.new_set()
+T["bun.xmlToResults()"] = MiniTest.new_set()
 
 T["bun.fileExists()"]["is true if the file exists"] = function()
   local path = Helpers.getCurrentPath()
@@ -53,6 +54,19 @@ T["bun.isBunProject()"]["is false if no bun.lock exists at the root of the worki
   local isBunProject = child.lua_get([[ require("neotest-bun/util/bun").isBunProject() ]])
 
   MiniTest.expect.equality(isBunProject, false)
+end
+
+T["bun.xmlToResults()"]["parses junit with a failure"] = function()
+  local xml = Helpers.readFixtureFile("junit/with-failure.xml")
+
+  local results = bun.xmlToResults(xml)
+
+  vim.print(results)
+  -- child.cmd("cd " .. path)
+  --
+  -- local isBunProject = child.lua_get([[ require("neotest-bun/util/bun").isBunProject() ]])
+
+  -- MiniTest.expect.equality(isBunProject, false)
 end
 
 -- T["setup()"]["overrides default values"] = function()

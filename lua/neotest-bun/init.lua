@@ -174,33 +174,50 @@ NeotestBun.build_spec = function(args)
   end
 
   local pos = args.tree:data()
-  local testNamePattern = "'.*'"
+  local binary = "bun test"
+  local command = vim.split(binary, "%s+")
+  vim.list_extend(command, {
+    "--reporter=junit",
+    "--reporter-outfile=" .. results_path,
+  })
+
+  local testNamePattern = nil
 
   if pos.type == "test" or pos.type == "namespace" then
     -- pos.id in form "path/to/file::Describe text::test text"
     local testName = string.sub(pos.id, string.find(pos.id, "::") + 2)
     testName, _ = string.gsub(testName, "::", " ")
     testNamePattern = bun.escapeTestPattern(testName)
-    testNamePattern = "'^" .. testNamePattern
+    testNamePattern = "^ " .. testNamePattern
     if pos.type == "test" then
-      testNamePattern = testNamePattern .. "$'"
+      testNamePattern = testNamePattern .. "$"
     else
-      testNamePattern = testNamePattern .. "'"
+      testNamePattern = testNamePattern .. ""
     end
   end
 
-  local binary = "bun test"
-  local command = vim.split(binary, "%s+")
+  if testNamePattern then
+    vim.list_extend(command, {
+      "--test-name-pattern=" .. testNamePattern,
+    })
+  end
 
   vim.list_extend(command, {
-    "--reporter=junit",
-    "--reporter-outfile=" .. results_path,
-    bun.escapeTestPattern(vim.fs.normalize(pos.path)),
+    vim.fs.normalize(pos.path),
   })
+  --
+  -- command = vim.split("bun test test/frontend/pages/Providers/Index.test.tsx", "%s+")
+  -- vim.list_extend(command, {
+  --   "-t=^ Index renders a list of Providers$",
+  --   "--reporter=junit",
+  --   "--reporter-outfile=" .. results_path,
+  -- })
 
   -- creating empty file for streaming results
   lib.files.write(results_path, "")
   local stream_data, stop_stream = neotestFileUtil.stream(results_path)
+
+  local root = NeotestBun.root(pos.path)
 
   return {
     command = command,
@@ -208,17 +225,12 @@ NeotestBun.build_spec = function(args)
       results_path = results_path,
       file = pos.path,
       stop_stream = stop_stream,
+      root = root
     },
     stream = function()
       return function()
         local new_results = stream_data()
-        local ok, parsed = pcall(vim.json.decode, new_results, { luanil = { object = true } })
-
-        if not ok or not parsed.testResults then
-          return {}
-        end
-
-        return bun.parsedJsonToResults(parsed, results_path, nil)
+        return bun.xmlToResults(root, new_results, results_path)
       end
     end,
   }
@@ -230,20 +242,13 @@ function NeotestBun.results(spec, b, tree)
   local output_file = spec.context.results_path
 
   local success, data = pcall(lib.files.read, output_file)
-
   if not success then
     logger.error("No test output file found ", output_file)
     return {}
   end
 
-  local ok, parsed = pcall(vim.xml.decode, data, { luanil = { object = true } })
-
-  if not ok then
-    logger.error("Failed to parse test output json ", output_file)
-    return {}
-  end
-
-  local results = bun.parsedJsonToResults(parsed, output_file, b.output)
+  local root = spec.context.root
+  local results = bun.xmlToResults(root, data, output_file, b.output)
 
   return results
 end
