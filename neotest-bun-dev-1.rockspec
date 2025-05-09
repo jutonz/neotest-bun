@@ -1,7 +1,7 @@
 package = "neotest-bun"
 version = "dev-1"
 source = {
-   url = "git+ssh://git@github.com/shortcuts/neovim-plugin-boilerplate.git"
+   url = "git+ssh://git@github.com/jutonz/neotest-bun.git"
 }
 description = {
    summary = "<p align=\"center\">     Plug and play Neovim plugin boilerplate with pre-configured CI, CD, linter, docs and tests.",
