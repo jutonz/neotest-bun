@@ -230,13 +230,13 @@ NeotestBun.build_spec = function(args)
     stream = function()
       return function()
         local new_results = stream_data()
-        return bun.xmlToResults(root, new_results, results_path)
+        return bun.xmlToResults(root, new_results)
       end
     end,
   }
 end
 
-function NeotestBun.results(spec, b)
+function NeotestBun.results(spec)
   spec.context.stop_stream()
 
   local output_file = spec.context.results_path
@@ -248,7 +248,7 @@ function NeotestBun.results(spec, b)
   end
 
   local root = spec.context.root
-  local results = bun.xmlToResults(root, data, output_file, b.output)
+  local results = bun.xmlToResults(root, data)
 
   return results
 end
