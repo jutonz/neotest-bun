@@ -22,17 +22,17 @@ end
 function bun.escapeTestPattern(s)
   return (
     s:gsub("%(", "%\\(")
-    :gsub("%)", "%\\)")
-    :gsub("%]", "%\\]")
-    :gsub("%[", "%\\[")
-    :gsub("%*", "%\\*")
-    :gsub("%+", "%\\+")
-    :gsub("%-", "%\\-")
-    :gsub("%?", "%\\?")
-    :gsub("%$", "%\\$")
-    :gsub("%^", "%\\^")
-    :gsub("%/", "%\\/")
-    :gsub("%'", "%\\'")
+      :gsub("%)", "%\\)")
+      :gsub("%]", "%\\]")
+      :gsub("%[", "%\\[")
+      :gsub("%*", "%\\*")
+      :gsub("%+", "%\\+")
+      :gsub("%-", "%\\-")
+      :gsub("%?", "%\\?")
+      :gsub("%$", "%\\$")
+      :gsub("%^", "%\\^")
+      :gsub("%/", "%\\/")
+      :gsub("%'", "%\\'")
   )
 end
 
@@ -46,34 +46,20 @@ function bun.ensureIsSequence(tableOrSequence)
   return tableOrSequence
 end
 
-function bun.xmlToResults(root, xml, xmlOutputFile, commandOutputFile)
+function bun.xmlToResults(root, xml)
   local tests = {}
 
   local handler = TreeHandler:new()
   local parser = xml2lua.parser(handler)
   parser:parse(xml)
 
-  -- if commandOutputFile then
-  --   local file = io.open(commandOutputFile, "r")
-  --   logger.debug(file:read("*all"))
-  --   file:close()
-  -- end
-
-  -- vim.print(handler.root.testsuites.testsuite.testcase)
-  -- logger.debug(xml)
-  -- logger.debug(vim.inspect(handler.root))
-
-  -- local file = io.open("/users/jutonz/desktop/hi.xml", "w")
-  -- file:write(xml)
-  -- file:close()
-  --
   local testsuites = bun.ensureIsSequence(handler.root.testsuites)
 
   for _, testsuite in ipairs(testsuites) do
     local testcases = bun.ensureIsSequence(testsuite.testsuite.testcase)
     for _, testcase in ipairs(testcases) do
       local attrs = testcase._attr
-      local status = nil
+      local status
 
       if testcase.failure then
         status = "failed"
