@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="bun test" tests="7" assertions="11" failures="0" skipped="0" time="0.673653">
+  <testsuite name="test/frontend/components/Layout/AppRoot.test.tsx" tests="7" assertions="11" failures="0" skipped="0" time="0.116" hostname="Justins-MacBook-Pro.local">
+    <testcase name="renders the marketplace navigation for marketplace users" classname="when the component is rendered &amp;gt; AppRoot" time="0.054451" file="test/frontend/components/Layout/AppRoot.test.tsx" assertions="2" />
+    <testcase name="renders the service portal navigation for marketplace  and service portal users" classname="when the component is rendered &amp;gt; AppRoot" time="0.01525" file="test/frontend/components/Layout/AppRoot.test.tsx" assertions="2" />
+  </testsuite>
+</testsuites>
