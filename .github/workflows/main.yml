@@ -41,10 +41,9 @@ jobs:
           version: v0.11.0
           steps:
 
-      - uses: MunifTanjim/luver-action@v1
+      - uses: leafo/gh-actions-lua@v11
         with:
-          default: 5.1
-          lua_versions: 5.1
+          luaVersion: "5.1"
 
       - name: generate documentation
         run: make documentation-ci
