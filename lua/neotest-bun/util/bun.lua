@@ -1,4 +1,5 @@
 local xml2lua = require("xml2lua")
+local TreeHandler = require("xmlhandler.tree")
 local logger = require("neotest.logging")
 
 local bun = {}
@@ -35,75 +36,20 @@ function bun.escapeTestPattern(s)
   )
 end
 
--- {
---   testsuites = {
---     _attr = {
---       assertions = "9",
---       failures = "0",
---       name = "bun test",
---       skipped = "0",
---       tests = "5",
---       time = "0.977182"
---     },
---     testsuite = {
---       _attr = {
---         assertions = "9",
---         failures = "0",
---         hostname = "Justins-MacBook-Pro.local",
---         name = "test/frontend/pages/Providers/Index.test.tsx",
---         skipped = "0",
---         tests = "5",
---         time = "0.396"
---       },
---       testcase = { {
---           _attr = {
---             assertions = "1",
---             classname = "Index",
---             file = "test/frontend/pages/Providers/Index.test.tsx",
---             name = "renders a list of Providers",
---             time = "0.028809"
---           }
---         }, {
---           _attr = {
---             assertions = "5",
---             classname = "Index",
---             file = "test/frontend/pages/Providers/Index.test.tsx",
---             name = "renders attributes of a provider",
---             time = "0.147854"
---           }
---         }, {
---           _attr = {
---             assertions = "1",
---             classname = "Index",
---             file = "test/frontend/pages/Providers/Index.test.tsx",
---             name = "marks all providers as Active",
---             time = "0.067235"
---           }
---         }, {
---           _attr = {
---             assertions = "1",
---             classname = "Index",
---             file = "test/frontend/pages/Providers/Index.test.tsx",
---             name = "has an empty state if there are no providers",
---             time = "0.054429"
---           }
---         }, {
---           _attr = {
---             assertions = "1",
---             classname = "Index",
---             file = "test/frontend/pages/Providers/Index.test.tsx",
---             name = "paginates if there are more than 25 providers",
---             time = "0.100357"
---           }
---         } }
---     }
---   }
--- }
---
+-- convert `{ status = "failed" }` into `{ { status = "falied" } }` so it can
+-- be passed into `ipairs`
+function bun.ensureIsSequence(tableOrSequence)
+  if type(tableOrSequence) == "table" and type(tableOrSequence[1]) ~= "table" then
+    return { tableOrSequence }
+  end
+
+  return tableOrSequence
+end
+
 function bun.xmlToResults(root, xml, xmlOutputFile, commandOutputFile)
   local tests = {}
 
-  local handler = require("xmlhandler.tree")
+  local handler = TreeHandler:new()
   local parser = xml2lua.parser(handler)
   parser:parse(xml)
 
@@ -120,9 +66,12 @@ function bun.xmlToResults(root, xml, xmlOutputFile, commandOutputFile)
   -- local file = io.open("/users/jutonz/desktop/hi.xml", "w")
   -- file:write(xml)
   -- file:close()
+  --
+  local testsuites = bun.ensureIsSequence(handler.root.testsuites)
 
-  for _, testsuite in ipairs(handler.root.testsuites) do
-    for _, testcase in ipairs(testsuite.testsuite.testcase) do
+  for _, testsuite in ipairs(testsuites) do
+    local testcases = bun.ensureIsSequence(testsuite.testsuite.testcase)
+    for _, testcase in ipairs(testcases) do
       local attrs = testcase._attr
       local status = nil
 
@@ -141,58 +90,6 @@ function bun.xmlToResults(root, xml, xmlOutputFile, commandOutputFile)
       }
     end
   end
-
-  -- for _, testresult in handler.root.testsuites
-
-  -- for _, testResult in pairs(data.testResults) do
-  --   local testFn = testResult.name
-  --   for _, assertionResult in pairs(testResult.assertionResults) do
-  --     local status, name = assertionResult.status, assertionResult.title
-  --
-  --     if name == nil then
-  --       logger.error("Failed to find parsed test result ", assertionResult)
-  --       return {}
-  --     end
-  --
-  --     local keyid = testFn
-  --
-  --     for _, value in ipairs(assertionResult.ancestorTitles) do
-  --       keyid = keyid .. "::" .. value
-  --     end
-  --
-  --     keyid = keyid .. "::" .. name
-  --
-  --     if status == "pending" then
-  --       status = "skipped"
-  --     end
-  --
-  --     tests[keyid] = {
-  --       status = status,
-  --       short = name .. ": " .. status,
-  --       output = consoleOut,
-  --       location = assertionResult.location,
-  --     }
-  --
-  --     if not vim.tbl_isempty(assertionResult.failureMessages) then
-  --       local errors = {}
-  --
-  --       for i, failMessage in ipairs(assertionResult.failureMessages) do
-  --         local msg = cleanAnsi(failMessage)
-  --         local errorLine, errorColumn = findErrorPosition(testFn, msg)
-  --
-  --         errors[i] = {
-  --           line = (errorLine or assertionResult.location.line) - 1,
-  --           column = (errorColumn or 1) - 1,
-  --           message = msg,
-  --         }
-  --
-  --         tests[keyid].short = tests[keyid].short .. "\n" .. msg
-  --       end
-  --
-  --       tests[keyid].errors = errors
-  --     end
-  --   end
-  -- end
 
   return tests
 end

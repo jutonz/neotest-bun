@@ -19,6 +19,7 @@ local T = MiniTest.new_set({
 
 T["bun.fileExists()"] = MiniTest.new_set()
 T["bun.isBunProject()"] = MiniTest.new_set()
+T["bun.ensureIsSequence()"] = MiniTest.new_set()
 T["bun.xmlToResults()"] = MiniTest.new_set()
 
 T["bun.fileExists()"]["is true if the file exists"] = function()
@@ -56,17 +57,59 @@ T["bun.isBunProject()"]["is false if no bun.lock exists at the root of the worki
   MiniTest.expect.equality(isBunProject, false)
 end
 
-T["bun.xmlToResults()"]["parses junit with a failure"] = function()
-  -- local xml = Helpers.readFixtureFile("junit/with-failure.xml")
-  --
-  -- local results = bun.xmlToResults(xml)
-  --
-  -- vim.print(results)
-  -- child.cmd("cd " .. path)
-  --
-  -- local isBunProject = child.lua_get([[ require("neotest-bun/util/bun").isBunProject() ]])
+T["bun.ensureIsSequence()"]["converts a single table into a sequence of tables"] = function()
+  local table = { status = "passed" }
+  MiniTest.expect.equality({ table }, bun.ensureIsSequence(table))
+end
 
-  -- MiniTest.expect.equality(isBunProject, false)
+T["bun.ensureIsSequence()"]["if the argument is already a sequence of tables, does nothing"] = function()
+  local sequenceOfTables = { { status = "passed" }, { status = "failed" } }
+  MiniTest.expect.equality(sequenceOfTables, bun.ensureIsSequence(sequenceOfTables))
+end
+
+T["bun.xmlToResults()"]["parses junit with a single failure"] = function()
+  local xml = Helpers.readFixtureFile("junit/single-failure.xml")
+  local root = "/root/path"
+
+  local results = bun.xmlToResults(root, xml)
+
+  local expected = {
+    [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::marks all providers as Active"] = {
+      status = "failed"
+    }
+  }
+  MiniTest.expect.equality(expected, results)
+end
+
+T["bun.xmlToResults()"]["parses junit with a multiple skipped tests"] = function()
+  local xml = Helpers.readFixtureFile("junit/two-skipped.xml")
+  local root = "/root/path"
+
+  local results = bun.xmlToResults(root, xml)
+
+  local expected = {
+    [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::has an empty state if there are no providers"] = {
+      status = "skipped"
+    },
+    [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::marks all providers as Active"] = {
+      status = "skipped"
+    }
+  }
+  MiniTest.expect.equality(expected, results)
+end
+
+T["bun.xmlToResults()"]["considers a test to pass if it's not skipped or failed"] = function()
+  local xml = Helpers.readFixtureFile("junit/one-passed.xml")
+  local root = "/root/path"
+
+  local results = bun.xmlToResults(root, xml)
+
+  local expected = {
+    [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::renders a list of Providers"] = {
+      status = "passed"
+    },
+  }
+  MiniTest.expect.equality(expected, results)
 end
 
 -- T["setup()"]["overrides default values"] = function()

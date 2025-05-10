@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="bun test" tests="2" assertions="0" failures="0" skipped="2" time="0.73952">
+  <testsuite name="test/frontend/pages/Providers/Index.test.tsx" tests="2" assertions="0" failures="0" skipped="2" time="0.184" hostname="Justins-MacBook-Pro.local">
+    <testcase name="marks all providers as Active" classname="Index" time="0" file="test/frontend/pages/Providers/Index.test.tsx" assertions="0">
+      <skipped />
+    </testcase>
+    <testcase name="has an empty state if there are no providers" classname="Index" time="0" file="test/frontend/pages/Providers/Index.test.tsx" assertions="0">
+      <skipped />
+    </testcase>
+  </testsuite>
+</testsuites>
