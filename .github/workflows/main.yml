@@ -116,6 +116,10 @@ jobs:
           path: _neovim
           key: ${{ runner.os }}-x64-${{ hashFiles('todays-date') }}
 
+      - uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: ${{ env.LUA_VERSION }}
+
       - name: restore luals cache
         uses: actions/cache@v4
         id: cache
