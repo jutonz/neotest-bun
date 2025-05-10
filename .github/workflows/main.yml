@@ -39,6 +39,12 @@ jobs:
         with:
           neovim: true
           version: v0.11.0
+          steps:
+
+      - uses: MunifTanjim/luver-action@v1
+        with:
+          default: 5.1
+          lua_versions: 5.1
 
       - name: generate documentation
         run: make documentation-ci
