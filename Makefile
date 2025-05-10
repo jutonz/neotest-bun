@@ -4,9 +4,8 @@ all: documentation lint luals test
 
 # runs all the test files.
 test:
-	make deps
 	nvim --version | head -n 1 && echo ''
-	nvim --headless --noplugin -u ./scripts/minimal_init.lua \
+	NVIM_APPNAME=neotest-bun nvim --headless -u ./scripts/minimal_init.lua \
 		-c "lua require('mini.test').setup()" \
 		-c "lua MiniTest.run({ execute = { reporter = MiniTest.gen_reporter.stdout({ group_depth = 2 }) } })"
 
@@ -20,24 +19,21 @@ test-0.8.3:
 	bob use 0.8.3
 	make test
 
-# installs `mini.nvim`, used for both the tests and documentation.
-deps:
-	@mkdir -p deps
-	git clone --depth 1 https://github.com/echasnovski/mini.nvim deps/mini.nvim
-
-# installs deps before running tests, useful for the CI.
-test-ci: deps test
+test-ci: test
 
 # generates the documentation.
 documentation:
-	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua require('mini.doc').generate()" -c "qa!"
+	NVIM_APPNAME=neotest-bun nvim \
+		--headless \
+		-u ./scripts/minimal_init.lua \
+		-c "lua require('mini.doc').generate()"
+		-c "qa!"
 
-# installs deps before running the documentation generation, useful for the CI.
-documentation-ci: deps documentation
+documentation-ci: documentation
 
 # performs a lint check and fixes issue if possible, following the config in `stylua.toml`.
 lint:
-	stylua . -g '*.lua' -g '!deps/' -g '!nightly/'
+	stylua . -g '*.lua' -g '!nightly/'
 	luacheck plugin/ lua/
 
 luals-ci:

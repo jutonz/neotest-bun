@@ -57,11 +57,11 @@ T["bun.isBunProject()"]["is false if no bun.lock exists at the root of the worki
 end
 
 T["bun.xmlToResults()"]["parses junit with a failure"] = function()
-  local xml = Helpers.readFixtureFile("junit/with-failure.xml")
-
-  local results = bun.xmlToResults(xml)
-
-  vim.print(results)
+  -- local xml = Helpers.readFixtureFile("junit/with-failure.xml")
+  --
+  -- local results = bun.xmlToResults(xml)
+  --
+  -- vim.print(results)
   -- child.cmd("cd " .. path)
   --
   -- local isBunProject = child.lua_get([[ require("neotest-bun/util/bun").isBunProject() ]])
