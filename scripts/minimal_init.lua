@@ -3,11 +3,12 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 -- local lazypath = "/Users/jutonz/code/jutonz/neotest-bun/tmp/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  local out =
+    vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out,                            "WarningMsg" },
+      { out, "WarningMsg" },
       { "\nPress any key to exit..." },
     }, true, {})
     vim.fn.getchar()
@@ -31,11 +32,11 @@ require("lazy").setup({
         "nvim-neotest/nvim-nio",
         "nvim-lua/plenary.nvim",
         "antoinemadec/FixCursorHold.nvim",
-        "nvim-treesitter/nvim-treesitter"
-      }
+        "nvim-treesitter/nvim-treesitter",
+      },
     },
     { "echasnovski/mini.nvim", version = "*" },
-    {dir = ".",}
+    { dir = "." },
   },
   install = { colorscheme = { "habamax" } },
 })

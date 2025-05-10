@@ -24,19 +24,13 @@ T["bun.xmlToResults()"] = MiniTest.new_set()
 
 T["bun.fileExists()"]["is true if the file exists"] = function()
   local path = Helpers.getCurrentPath()
-  MiniTest.expect.equality(
-    bun.fileExists(path),
-    true
-  )
+  MiniTest.expect.equality(bun.fileExists(path), true)
 end
 
 T["bun.fileExists()"]["is false if the file doesn't exist"] = function()
   local path = Helpers.getCurrentPath()
   path = string.gsub(path, ".lua", ".luaf")
-  MiniTest.expect.equality(
-    bun.fileExists(path),
-    false
-  )
+  MiniTest.expect.equality(bun.fileExists(path), false)
 end
 
 T["bun.isBunProject()"]["is true if bun.lock exists at the root of the working directory"] = function()
@@ -75,8 +69,8 @@ T["bun.xmlToResults()"]["parses junit with a single failure"] = function()
 
   local expected = {
     [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::marks all providers as Active"] = {
-      status = "failed"
-    }
+      status = "failed",
+    },
   }
   MiniTest.expect.equality(expected, results)
 end
@@ -89,11 +83,11 @@ T["bun.xmlToResults()"]["parses junit with a multiple skipped tests"] = function
 
   local expected = {
     [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::has an empty state if there are no providers"] = {
-      status = "skipped"
+      status = "skipped",
     },
     [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::marks all providers as Active"] = {
-      status = "skipped"
-    }
+      status = "skipped",
+    },
   }
   MiniTest.expect.equality(expected, results)
 end
@@ -106,7 +100,7 @@ T["bun.xmlToResults()"]["considers a test to pass if it's not skipped or failed"
 
   local expected = {
     [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::renders a list of Providers"] = {
-      status = "passed"
+      status = "passed",
     },
   }
   MiniTest.expect.equality(expected, results)

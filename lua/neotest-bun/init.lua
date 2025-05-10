@@ -186,7 +186,7 @@ NeotestBun.build_spec = function(args)
   if pos.type == "test" or pos.type == "namespace" then
     -- pos.id in form "path/to/file::Describe text::test text"
     local testName = string.sub(pos.id, string.find(pos.id, "::") + 2)
-    testName, _ = string.gsub(testName, "::", " ")
+    testName = string.gsub(testName, "::", " ")
     testNamePattern = bun.escapeTestPattern(testName)
     testNamePattern = "^ " .. testNamePattern
     if pos.type == "test" then
@@ -225,7 +225,7 @@ NeotestBun.build_spec = function(args)
       results_path = results_path,
       file = pos.path,
       stop_stream = stop_stream,
-      root = root
+      root = root,
     },
     stream = function()
       return function()
@@ -236,7 +236,7 @@ NeotestBun.build_spec = function(args)
   }
 end
 
-function NeotestBun.results(spec, b, tree)
+function NeotestBun.results(spec, b)
   spec.context.stop_stream()
 
   local output_file = spec.context.results_path
