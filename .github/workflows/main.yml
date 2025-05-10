@@ -8,6 +8,7 @@ on:
 
 env:
   LUA_LS_VERSION: 3.7.4
+  LUA_VERSION: 5.1
 
 concurrency:
   group: github.head_ref
@@ -43,7 +44,7 @@ jobs:
 
       - uses: leafo/gh-actions-lua@v11
         with:
-          luaVersion: "5.1"
+          luaVersion: ${{ env.LUA_VERSION }}
 
       - name: generate documentation
         run: make documentation-ci
@@ -72,6 +73,10 @@ jobs:
         with:
           path: .ci/lua-ls
           key: ${{ env.LUA_LS_VERSION }}
+
+      - uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: ${{ env.LUA_VERSION }}
 
       - name: setup luals
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
