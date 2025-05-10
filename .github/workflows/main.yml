@@ -8,6 +8,7 @@ on:
 
 env:
   LUA_LS_VERSION: 3.7.4
+  LUA_VERSION: 5.1
 
 concurrency:
   group: github.head_ref
@@ -39,6 +40,11 @@ jobs:
         with:
           neovim: true
           version: v0.11.0
+          steps:
+
+      - uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: ${{ env.LUA_VERSION }}
 
       - name: generate documentation
         run: make documentation-ci
@@ -54,7 +60,7 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        neovim_version: ['v0.9.5', 'v0.10.1', 'v0.11.0']
+        neovim_version: ['v0.10.1', 'v0.11.1']
 
     steps:
       - uses: actions/checkout@v4
@@ -67,6 +73,10 @@ jobs:
         with:
           path: .ci/lua-ls
           key: ${{ env.LUA_LS_VERSION }}
+
+      - uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: ${{ env.LUA_VERSION }}
 
       - name: setup luals
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
@@ -106,6 +116,10 @@ jobs:
           path: _neovim
           key: ${{ runner.os }}-x64-${{ hashFiles('todays-date') }}
 
+      - uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: ${{ env.LUA_VERSION }}
+
       - name: restore luals cache
         uses: actions/cache@v4
         id: cache
@@ -132,28 +146,28 @@ jobs:
       - name: run tests
         run: make test-ci
 
-  release:
-    name: release
-    if: ${{ github.ref == 'refs/heads/main' }}
-    needs:
-      - tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: google-github-actions/release-please-action@v4
-        id: release
-        with:
-          release-type: simple
-          package-name: YOUR_REPOSITORY_NAME
-
-      - name: tag stable versions
-        if: ${{ steps.release.outputs.release_created }}
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          git remote add gh-token "https://${{ secrets.GITHUB_TOKEN }}@github.com/google-github-actions/release-please-action.git"
-          git tag -d stable || true
-          git push origin :stable || true
-          git tag -a stable -m "Last Stable Release"
-          git push origin stable
+  # release:
+  #   name: release
+  #   if: ${{ github.ref == 'refs/heads/main' }}
+  #   needs:
+  #     - tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - uses: google-github-actions/release-please-action@v4
+  #       id: release
+  #       with:
+  #         release-type: simple
+  #         package-name: YOUR_REPOSITORY_NAME
+  #
+  #     - name: tag stable versions
+  #       if: ${{ steps.release.outputs.release_created }}
+  #       run: |
+  #         git config user.name github-actions[bot]
+  #         git config user.email github-actions[bot]@users.noreply.github.com
+  #         git remote add gh-token "https://${{ secrets.GITHUB_TOKEN }}@github.com/google-github-actions/release-please-action.git"
+  #         git tag -d stable || true
+  #         git push origin :stable || true
+  #         git tag -a stable -m "Last Stable Release"
+  #         git push origin stable
