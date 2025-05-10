@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="bun test" tests="4" assertions="4" failures="0" skipped="0" time="1.40058">
+  <testsuite name="test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx" tests="2" assertions="2" failures="0" skipped="0" time="0.027" hostname="Justins-MacBook-Pro.local">
+    <testcase name="renders attributes from the ModelDetail" classname="DetailsDrawer" time="0.0247" file="test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx" assertions="11" />
+    <testcase name="renders attributes from a minimally filled ModelDetail" classname="DetailsDrawer" time="0.003427" file="test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx" assertions="2" />
+  </testsuite>
+  <testsuite name="test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx" tests="2" assertions="12" failures="0" skipped="0" time="0.005" hostname="Justins-MacBook-Pro.local">
+    <testcase name="renders attributes from the Subscription" classname="SubscriptionDrawer" time="0.003906" file="test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx" assertions="11" />
+    <testcase name="renders attributes from a Legacy System Subscription" classname="SubscriptionDrawer" time="0.002907" file="test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx" assertions="1" />
+  </testsuite>
+</testsuites>
