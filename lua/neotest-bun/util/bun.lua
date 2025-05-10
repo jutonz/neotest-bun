@@ -1,6 +1,6 @@
 local xml2lua = require("xml2lua")
 local TreeHandler = require("xmlhandler.tree")
-local logger = require("neotest.logging")
+-- local logger = require("neotest.logging")
 
 local bun = {}
 
