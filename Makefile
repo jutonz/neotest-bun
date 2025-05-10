@@ -26,7 +26,7 @@ documentation:
 	NVIM_APPNAME=neotest-bun nvim \
 		--headless \
 		-u ./scripts/minimal_init.lua \
-		-c "lua require('mini.doc').generate()"
+		-c "lua require('mini.doc').generate()" \
 		-c "qa!"
 
 documentation-ci: documentation
