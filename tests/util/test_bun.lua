@@ -113,18 +113,18 @@ T["bun.xmlToResults()"]["handles output with two testsuites"] = function()
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    ["/root/path/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from a minimally filled ModelDetail"] = {
-      status = "passed"
+    [root .."/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from a minimally filled ModelDetail"] = {
+      status = "passed",
     },
-    ["/root/path/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from the ModelDetail"] = {
-      status = "passed"
+    [root .."/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from the ModelDetail"] = {
+      status = "passed",
     },
-    ["/root/path/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from a Legacy System Subscription"] = {
-      status = "passed"
+    [root .."/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from a Legacy System Subscription"] = {
+      status = "passed",
     },
-    ["/root/path/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from the Subscription"] = {
-      status = "passed"
-    }
+    [root .."/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from the Subscription"] = {
+      status = "passed",
+    },
   }
   MiniTest.expect.equality(expected, results)
 end
