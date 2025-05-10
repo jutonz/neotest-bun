@@ -17,7 +17,7 @@ manager, like `bundle` or `npm`). I know that lazy.nvim can do that, but I'm
 not sure about other plugin managers.
 
 ```lua
-{ "jutonz/neotest-bun" },
+require("lazy").setup({ "jutonz/neotest-bun" })
 ```
 
 Because this plugin has some lua dependencies, you'll also need lua 5.1
