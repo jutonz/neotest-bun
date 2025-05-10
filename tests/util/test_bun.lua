@@ -106,6 +106,29 @@ T["bun.xmlToResults()"]["considers a test to pass if it's not skipped or failed"
   MiniTest.expect.equality(expected, results)
 end
 
+T["bun.xmlToResults()"]["handles output with two testsuites"] = function()
+  local xml = Helpers.readFixtureFile("junit/two-testsuites.xml")
+  local root = "/root/path"
+
+  local results = bun.xmlToResults(root, xml)
+
+  local expected = {
+    [root .."/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from a minimally filled ModelDetail"] = {
+      status = "passed",
+    },
+    [root .."/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from the ModelDetail"] = {
+      status = "passed",
+    },
+    [root .."/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from a Legacy System Subscription"] = {
+      status = "passed",
+    },
+    [root .."/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from the Subscription"] = {
+      status = "passed",
+    },
+  }
+  MiniTest.expect.equality(expected, results)
+end
+
 -- T["setup()"]["overrides default values"] = function()
 --   child.lua([[require('neotest-bun').setup({
 --         -- write all the options with a value different than the default ones

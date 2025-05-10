@@ -53,10 +53,9 @@ function bun.xmlToResults(root, xml)
   local parser = xml2lua.parser(handler)
   parser:parse(xml)
 
-  local testsuites = bun.ensureIsSequence(handler.root.testsuites)
-
+  local testsuites = bun.ensureIsSequence(handler.root.testsuites.testsuite)
   for _, testsuite in ipairs(testsuites) do
-    local testcases = bun.ensureIsSequence(testsuite.testsuite.testcase)
+    local testcases = bun.ensureIsSequence(testsuite.testcase)
     for _, testcase in ipairs(testcases) do
       local attrs = testcase._attr
       local status
