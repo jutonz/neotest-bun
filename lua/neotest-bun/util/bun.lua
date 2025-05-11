@@ -46,6 +46,37 @@ function bun.ensureIsSequence(tableOrSequence)
   return tableOrSequence
 end
 
+-- for a test with nested describe blocks like this:
+--
+-- ```js
+-- describe("AppRoot", () => {
+--   describe("when admin", () => {
+--     it("renders")
+--   })
+-- })
+-- ```
+--
+-- the reported classname from junit will look like this:
+-- "when admin > AppRoot"
+--
+-- This function tranlates that to "AppRoot::when admin" so it matches how
+-- neotest is expecting
+function bun.parseClassname(classname)
+  local testName = vim.split(classname, " &gt; ")
+  local parsed
+
+  if #testName > 1 then
+    parsed = testName[#testName]
+    for i = 1, #testName - 1 do
+      parsed = parsed .. "::" .. testName[i]
+    end
+  else
+    parsed = testName[1]
+  end
+
+  return parsed
+end
+
 function bun.xmlToResults(root, xml)
   local tests = {}
 
@@ -68,7 +99,8 @@ function bun.xmlToResults(root, xml)
         status = "passed"
       end
 
-      local key = root .. "/" .. attrs.file .. "::" .. attrs.classname .. "::" .. attrs.name
+      local classname = bun.parseClassname(attrs.classname)
+      local key = root .. "/" .. attrs.file .. "::" .. classname .. "::" .. attrs.name
 
       tests[key] = {
         status = status,
