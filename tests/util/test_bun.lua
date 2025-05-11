@@ -20,6 +20,7 @@ local T = MiniTest.new_set({
 T["bun.fileExists()"] = MiniTest.new_set()
 T["bun.isBunProject()"] = MiniTest.new_set()
 T["bun.ensureIsSequence()"] = MiniTest.new_set()
+T["bun.parseClassname()"] = MiniTest.new_set()
 T["bun.xmlToResults()"] = MiniTest.new_set()
 
 T["bun.fileExists()"]["is true if the file exists"] = function()
@@ -59,6 +60,18 @@ end
 T["bun.ensureIsSequence()"]["if the argument is already a sequence of tables, does nothing"] = function()
   local sequenceOfTables = { { status = "passed" }, { status = "failed" } }
   MiniTest.expect.equality(sequenceOfTables, bun.ensureIsSequence(sequenceOfTables))
+end
+
+T["bun.parseClassname()"]["handles nested describe blocks"] = function()
+  local classname = "when the component is rendered &gt; AppRoot"
+  local actual = bun.parseClassname(classname)
+  MiniTest.expect.equality("AppRoot::when the component is rendered", actual)
+end
+
+T["bun.parseClassname()"]["doesn't modify classnames which aren't nested"] = function()
+  local classname = "AppRoot"
+  local actual = bun.parseClassname(classname)
+  MiniTest.expect.equality("AppRoot", actual)
 end
 
 T["bun.xmlToResults()"]["parses junit with a single failure"] = function()
@@ -113,16 +126,16 @@ T["bun.xmlToResults()"]["handles output with two testsuites"] = function()
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .."/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from a minimally filled ModelDetail"] = {
+    [root .. "/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from a minimally filled ModelDetail"] = {
       status = "passed",
     },
-    [root .."/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from the ModelDetail"] = {
+    [root .. "/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from the ModelDetail"] = {
       status = "passed",
     },
-    [root .."/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from a Legacy System Subscription"] = {
+    [root .. "/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from a Legacy System Subscription"] = {
       status = "passed",
     },
-    [root .."/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from the Subscription"] = {
+    [root .. "/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from the Subscription"] = {
       status = "passed",
     },
   }
@@ -136,10 +149,10 @@ T["bun.xmlToResults()"]["handles output with nested describe blocks"] = function
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .."/test/frontend/components/Layout/AppRoot.test.tsx::AppRoot::when the component is rendered::renders the marketplace navigation for marketplace users"] = {
+    [root .. "/test/frontend/components/Layout/AppRoot.test.tsx::AppRoot::when the component is rendered::renders the marketplace navigation for marketplace users"] = {
       status = "passed",
     },
-    [root .."test/frontend/components/Layout/AppRoot.test.tsx::AppRoot::when the component is rendered::renders the service portal navigation for marketplace  and service portal users"] = {
+    [root .. "/test/frontend/components/Layout/AppRoot.test.tsx::AppRoot::when the component is rendered::renders the service portal navigation for marketplace  and service portal users"] = {
       status = "passed",
     },
   }
