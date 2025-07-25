@@ -21,6 +21,10 @@ test-0.8.3:
 
 test-ci: test
 
+# runs tests in Docker container
+test-docker:
+	docker build -t neotest-bun-test . && docker run --rm -v $$(pwd):/workspace neotest-bun-test
+
 # generates the documentation.
 documentation:
 	NVIM_APPNAME=neotest-bun nvim \
