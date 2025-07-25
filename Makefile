@@ -2,6 +2,9 @@
 
 all: documentation lint luals test
 
+clean:
+	rm -rf ./tmp
+
 # runs all the test files.
 test:
 	nvim --version | head -n 1 && echo ''
