@@ -1,5 +1,5 @@
 package = "neotest-bun"
-version = "dev-1"
+version = "scm-1"
 source = {
    url = "git+ssh://git@github.com/jutonz/neotest-bun.git"
 }

@@ -46,6 +46,8 @@ jobs:
         with:
           luaVersion: ${{ env.LUA_VERSION }}
 
+      - uses: leafo/gh-actions-luarocks@v4
+
       - name: generate documentation
         run: make documentation-ci
 
@@ -77,6 +79,8 @@ jobs:
       - uses: leafo/gh-actions-lua@v11
         with:
           luaVersion: ${{ env.LUA_VERSION }}
+
+      - uses: leafo/gh-actions-luarocks@v4
 
       - name: setup luals
         if: ${{ steps.cache.outputs.cache-hit != 'true' }}
@@ -119,6 +123,8 @@ jobs:
       - uses: leafo/gh-actions-lua@v11
         with:
           luaVersion: ${{ env.LUA_VERSION }}
+
+      - uses: leafo/gh-actions-luarocks@v4
 
       - name: restore luals cache
         uses: actions/cache@v4

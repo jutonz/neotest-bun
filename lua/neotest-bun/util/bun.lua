@@ -62,7 +62,13 @@ end
 -- This function tranlates that to "AppRoot::when admin" so it matches how
 -- neotest is expecting
 function bun.parseClassname(classname)
-  local testName = vim.split(classname, " &gt; ")
+  -- Handle both &gt; and > separators
+  local separator = " &gt; "
+  if not string.find(classname, separator) then
+    separator = " > "
+  end
+
+  local testName = vim.split(classname, separator)
   local parsed
 
   if #testName > 1 then
