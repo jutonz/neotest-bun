@@ -7,5 +7,9 @@
     "workspace.library": [
         "/usr/local/share/nvim/runtime/lua",
         ".ci/neovim/share/nvim/runtime/lua"
+    ],
+    "workspace.ignoreDir": [
+        ".luarocks",
+        "tmp"
     ]
 }
