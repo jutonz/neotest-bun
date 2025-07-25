@@ -5,7 +5,7 @@ all: documentation lint luals test
 # runs all the test files.
 test:
 	nvim --version | head -n 1 && echo ''
-	NVIM_APPNAME=neotest-bun nvim --headless -u ./scripts/minimal_init.lua \
+	NVIM_APPNAME=nvim-neotest-bun-test nvim --headless -u ./scripts/minimal_init.lua \
 		-c "lua require('mini.test').setup()" \
 		-c "lua MiniTest.run({ execute = { reporter = MiniTest.gen_reporter.stdout({ group_depth = 2 }) } })"
 
