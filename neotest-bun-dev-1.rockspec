@@ -4,13 +4,9 @@ source = {
    url = "git+ssh://git@github.com/jutonz/neotest-bun.git"
 }
 description = {
-   summary = "<p align=\"center\">     Plug and play Neovim plugin boilerplate with pre-configured CI, CD, linter, docs and tests.",
-   detailed = [[
-<p align="center">
-    Plug and play Neovim plugin boilerplate with pre-configured CI, CD, linter, docs and tests.
-</p>]],
-   homepage = "*** please enter a project homepage ***",
-   license = "*** please specify a license ***"
+   summary = "A neotest adapter for bun",
+   homepage = "https://github.com/jutonz/neotest-bun",
+   license = "MIT"
 }
 dependencies = {
    "lua ~> 5.1",
