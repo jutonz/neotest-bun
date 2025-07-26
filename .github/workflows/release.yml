@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: write
     env:
-      PACKAGE_NAME=neotest-bun
+      PACKAGE_NAME: neotest-bun
 
     steps:
       - uses: actions/checkout@v4
