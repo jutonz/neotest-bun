@@ -62,7 +62,7 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        neovim_version: ['v0.10.1', 'v0.11.1']
+        neovim_version: ['v0.10.1', 'v0.11.3']
 
     steps:
       - uses: actions/checkout@v4
@@ -100,6 +100,9 @@ jobs:
 
       - name: run tests
         run: make test-ci
+
+      - name: Test packing luarock
+        run: luarocks pack neotest-bun-scm-1.rockspec
 
   tests-nightly:
     needs:
