@@ -48,6 +48,7 @@ jobs:
 
       - name: Upload to LuaRocks
         run: |
+          luarocks install dkjson
           luarocks upload ${PACKAGE_NAME}-${{ steps.version.outputs.VERSION }}-1.rockspec --api-key=${{ secrets.LUAROCKS_API_KEY }}
 
       - name: Generate GitHub release
