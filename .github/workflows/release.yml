@@ -53,3 +53,6 @@ jobs:
 
       - name: Generate GitHub release
         uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${PACKAGE_NAME}-${VERSION}-1.rockspec
