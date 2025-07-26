@@ -26,8 +26,13 @@ test-docker:
 
 # generates the documentation.
 documentation:
-	NVIM_APPNAME=neotest-bun nvim \
-		--headless \
+	mkdir -p ./tmp
+	NVIM_APPNAME=nvim-neotest-bun-test \
+	XDG_CONFIG_HOME=$$(pwd)/tmp/.config \
+	XDG_DATA_HOME=$$(pwd)/tmp/.local/share \
+	XDG_STATE_HOME=$$(pwd)/tmp/.local/state \
+	XDG_CACHE_HOME=$$(pwd)/tmp/.cache \
+	nvim --headless \
 		-u ./scripts/minimal_init.lua \
 		-c "lua require('mini.doc').generate()" \
 		-c "qa!"
