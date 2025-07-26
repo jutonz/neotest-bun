@@ -36,19 +36,12 @@ require("lazy").setup({
       },
     },
     { "echasnovski/mini.nvim", version = "*" },
-    { dir = ".", build = false },
+    { dir = "." },
   },
   install = { colorscheme = { "habamax" } },
 })
 
--- Only install plugins if this isn't a test child process
-if not vim.env.NVIM then
-  require("lazy").install({ wait = true })
-
-  -- Install xml2lua dependency manually since lazy.nvim's luarocks has issues
-  local lazy_rocks_path = vim.fn.stdpath("data") .. "/lazy-rocks/_"
-  vim.fn.system({"luarocks", "--tree=" .. lazy_rocks_path, "install", "xml2lua"})
-end
+require("lazy").install({ wait = true })
 
 -- Add current directory to 'runtimepath' to be able to use 'lua' files
 vim.cmd([[let &rtp.=','.getcwd()]])
