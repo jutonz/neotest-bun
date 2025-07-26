@@ -23,5 +23,5 @@ jobs:
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         run: |
-          luarocks install json
-          luarocks upload neotest-bun-scm-1.rockspec --api-key="$LUAROCKS_API_KEY"
+          luarocks install dkjson
+          luarocks upload neotest-bun-scm-1.rockspec --force --api-key="$LUAROCKS_API_KEY"
