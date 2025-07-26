@@ -1,0 +1,51 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      PACKAGE_NAME=neotest-bun
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Lua
+        uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: "5.1"
+
+      - name: Setup LuaRocks
+        uses: leafo/gh-actions-luarocks@v4
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Generate versioned rockspec
+        run: |
+          VERSION=${{ steps.version.outputs.VERSION }}
+
+          # Copy scm rockspec as template
+          cp ${PACKAGE_NAME}-scm-1.rockspec ${PACKAGE_NAME}-${VERSION}-1.rockspec
+
+          # Update version and source in the new rockspec
+          sed -i "s/version = \"scm-1\"/version = \"${VERSION}-1\"/" ${PACKAGE_NAME}-${VERSION}-1.rockspec
+          sed -i "s/tag = \"main\"/tag = \"v${VERSION}\"/" ${PACKAGE_NAME}-${VERSION}-1.rockspec
+          sed -i "s/branch = \"main\"/tag = \"v${VERSION}\"/" ${PACKAGE_NAME}-${VERSION}-1.rockspec
+
+          # Remove branch reference if it exists
+          sed -i "/branch = /d" ${PACKAGE_NAME}-${VERSION}-1.rockspec
+
+          cat ${PACKAGE_NAME}-${VERSION}-1.rockspec
+
+      - name: Upload to LuaRocks
+        run: |
+          luarocks upload ${PACKAGE_NAME}-${{ steps.version.outputs.VERSION }}-1.rockspec --api-key=${{ secrets.LUAROCKS_API_KEY }}
