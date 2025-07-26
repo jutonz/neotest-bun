@@ -20,9 +20,5 @@ not sure about other plugin managers.
 require("lazy").setup({ "jutonz/neotest-bun" })
 ```
 
-Because this plugin has some lua dependencies, you'll also need lua 5.1
-installed on your computer. This is easiest to do by adding `lua 5.1` to your
-`.tool-versions` file if you're using asdf or mise.
-
 [lazy.nvim]: https://github.com/folke/lazy.nvim
 
