@@ -238,9 +238,6 @@ local function parseCdata(self, xml, f)
     end    
 end
 
---- Parse a Normal tag
--- Need check for embedded '>' in attribute value and extend
--- match recursively if necessary eg. <tag attr="123>456"> 
 local function parseNormalTag(self, xml, f)
     --Check for errors
     while 1 do
@@ -314,8 +311,6 @@ local function parseTagType(self, xml, f)
     end
 end
 
---- Get next tag (first pass - fix exceptions below).
---@return true if the next tag could be got, false otherwise
 local function getNextTag(self, xml, f)
   f.match, f.endMatch, f.text, f.endt1, f.tagstr, f.endt2 = string.find(xml, self._XML, f.pos)
   if not f.match then 
@@ -339,10 +334,6 @@ local function getNextTag(self, xml, f)
   return f.endMatch ~= nil
 end
 
---Main function which starts the XML parsing process
---@param xml the XML string to parse
---@param parseAttributes indicates if tag attributes should be parsed or not. 
---       If omitted, the default value is true.
 function XmlParser:parse(xml, parseAttributes)
     if type(self) ~= "table" or getmetatable(self) ~= XmlParser then
         error("You must call xmlparser:parse(parameters) instead of xmlparser.parse(parameters)")

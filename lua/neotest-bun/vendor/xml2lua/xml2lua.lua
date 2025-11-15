@@ -35,16 +35,10 @@ function xml2lua.parser(handler)
     return XmlParser.new(handler, options)
 end
 
----Recursivelly prints a table in an easy-to-ready format
---@param tb The table to be printed
 function xml2lua.printable(tb)
     printableInternal(tb)
 end
 
----Handler to generate a string prepresentation of a table
---Convenience function for printHandler (Does not support recursive tables).
---@param t Table to be parsed
---@return a string representation of the table
 function xml2lua.toString(t)
     local sep = ''
     local res = ''
@@ -64,9 +58,6 @@ function xml2lua.toString(t)
     return res
 end
 
---- Loads an XML file from a specified path
--- @param xmlFilePath the path for the XML file to load
--- @return the XML loaded file content
 function xml2lua.loadFile(xmlFilePath)
     local f, e = io.open(xmlFilePath, "r")
     if f then
@@ -79,12 +70,6 @@ function xml2lua.loadFile(xmlFilePath)
     error(e)
 end
 
----Gets an _attr element from a table that represents the attributes of an XML tag,
---and generates a XML String representing the attibutes to be inserted
---into the openning tag of the XML
---
---@param attrTable table from where the _attr field will be got
---@return a XML String representation of the tag attributes
 local function attrToXml(attrTable)
   local s = ""
   attrTable = attrTable or {}
@@ -95,7 +80,6 @@ local function attrToXml(attrTable)
   return s
 end
 
----Gets the first key of a given table
 local function getSingleChild(tb)
   local count = 0
   for _ in pairs(tb) do
@@ -195,14 +179,6 @@ function xml2lua.parseTableToXml(obj, tagName, level)
   end
     end
 
----Converts a Lua table to a XML String representation.
---@param tb Table to be converted to XML
---@param tableName Name of the table variable given to this function,
---                 to be used as the root tag. If a value is not provided
---                 no root tag will be created.
---@param level Only used internally, when the function is called recursively to print indentation
---
---@return a String representing the table content in XML
 function xml2lua.toXml(tb, tableName, level)
   xml2lua.xmltb = {}
   level = level or 0
