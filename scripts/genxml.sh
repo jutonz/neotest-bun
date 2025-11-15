@@ -12,6 +12,9 @@ JUNIT_DIR="$PROJECT_ROOT/tests/fixtures/junit"
 # Ensure junit directory exists
 mkdir -p "$JUNIT_DIR"
 
+# Delete all existing XML files in the directory
+rm -f "$JUNIT_DIR"/*.xml
+
 # Change to the bun_tests directory (where package.json is)
 cd "$BUN_TESTS_DIR"
 
