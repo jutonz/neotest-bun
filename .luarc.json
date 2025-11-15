@@ -10,6 +10,7 @@
     ],
     "workspace.ignoreDir": [
         ".luarocks",
-        "tmp"
+        "tmp",
+        "lua/neotest-bun/vendor"
     ]
 }
