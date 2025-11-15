@@ -38,6 +38,10 @@ require("lazy").setup({
     { "echasnovski/mini.nvim", version = "*" },
     { dir = "." },
   },
+  rocks = {
+    hererocks = false,
+    enabled = false
+  },
   install = { colorscheme = { "habamax" } },
 })
 
