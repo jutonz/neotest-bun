@@ -142,17 +142,14 @@ T["bun.xmlToResults()"]["handles output with two testsuites"] = function()
   MiniTest.expect.equality(expected, results)
 end
 
-T["bun.xmlToResults()"]["handles output with nested describe blocks"] = function()
-  local xml = Helpers.readFixtureFile("junit/nested-describe.xml")
+T["bun.xmlToResults()"]["handles output with describe blocks"] = function()
+  local xml = Helpers.readFixtureFile("junit/describe.test.ts.xml")
   local root = "/root/path"
 
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .. "/test/frontend/components/Layout/AppRoot.test.tsx::AppRoot::when the component is rendered::renders the marketplace navigation for marketplace users"] = {
-      status = "passed",
-    },
-    [root .. "/test/frontend/components/Layout/AppRoot.test.tsx::AppRoot::when the component is rendered::renders the service portal navigation for marketplace  and service portal users"] = {
+    [root .. "/tests/describe.test.ts::a describe block::the test"] = {
       status = "passed",
     },
   }

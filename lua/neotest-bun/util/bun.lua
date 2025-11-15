@@ -90,28 +90,44 @@ function bun.xmlToResults(root, xml)
   local parser = xml2lua.parser(handler)
   parser:parse(xml)
 
+  -- Helper function to recursively process testsuites and extract testcases
+  local function processTestsuite(testsuite)
+    -- First, check if this testsuite has direct testcases
+    if testsuite.testcase then
+      local testcases = bun.ensureIsSequence(testsuite.testcase)
+      for _, testcase in ipairs(testcases) do
+        local attrs = testcase._attr
+        local status
+
+        if testcase.failure then
+          status = "failed"
+        elseif testcase.skipped then
+          status = "skipped"
+        else
+          status = "passed"
+        end
+
+        local classname = bun.parseClassname(attrs.classname)
+        local key = root .. "/" .. attrs.file .. "::" .. classname .. "::" .. attrs.name
+
+        tests[key] = {
+          status = status,
+        }
+      end
+    end
+
+    -- Then, check if this testsuite has nested testsuites
+    if testsuite.testsuite then
+      local nestedTestsuites = bun.ensureIsSequence(testsuite.testsuite)
+      for _, nestedTestsuite in ipairs(nestedTestsuites) do
+        processTestsuite(nestedTestsuite)
+      end
+    end
+  end
+
   local testsuites = bun.ensureIsSequence(handler.root.testsuites.testsuite)
   for _, testsuite in ipairs(testsuites) do
-    local testcases = bun.ensureIsSequence(testsuite.testcase)
-    for _, testcase in ipairs(testcases) do
-      local attrs = testcase._attr
-      local status
-
-      if testcase.failure then
-        status = "failed"
-      elseif testcase.skipped then
-        status = "skipped"
-      else
-        status = "passed"
-      end
-
-      local classname = bun.parseClassname(attrs.classname)
-      local key = root .. "/" .. attrs.file .. "::" .. classname .. "::" .. attrs.name
-
-      tests[key] = {
-        status = status,
-      }
-    end
+    processTestsuite(testsuite)
   end
 
   return tests
