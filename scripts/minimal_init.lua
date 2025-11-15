@@ -23,6 +23,10 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+-- Get absolute path to plugin root
+local script_path = debug.getinfo(1, "S").source:sub(2)
+local plugin_root = vim.fn.fnamemodify(script_path, ":p:h:h")
+
 -- Setup lazy.nvim
 require("lazy").setup({
   spec = {
@@ -36,7 +40,7 @@ require("lazy").setup({
       },
     },
     { "echasnovski/mini.nvim", version = "*" },
-    { dir = "." },
+    { dir = plugin_root },
   },
   rocks = {
     hererocks = false,
@@ -47,8 +51,8 @@ require("lazy").setup({
 
 require("lazy").install({ wait = true })
 
--- Add current directory to 'runtimepath' to be able to use 'lua' files
-vim.cmd([[let &rtp.=','.getcwd()]])
+-- Update runtimepath so lua files can be required in tests.
+vim.opt.rtp:append(plugin_root)
 
 -- Set up 'mini.test' and 'mini.doc' only when calling headless Neovim (like with `make test` or `make documentation`)
 if #vim.api.nvim_list_uis() == 0 then
