@@ -58,4 +58,10 @@ if #vim.api.nvim_list_uis() == 0 then
 
   -- Set up 'mini.doc'
   require("mini.doc").setup()
+
+  -- Ensure required treesitter parsers are installed
+  require("nvim-treesitter.configs").setup({
+    ensure_installed = { "typescript" },
+    sync_install = true,
+  })
 end
