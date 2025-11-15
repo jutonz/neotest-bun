@@ -72,4 +72,11 @@ if #vim.api.nvim_list_uis() == 0 then
     ensure_installed = { "typescript" },
     sync_install = true,
   })
+  -- require("neotest-bun")
+
+  -- require("neotest").setup({
+  --   adapters = {
+  --     require("neotest-bun")
+  --   }
+  -- })
 end
