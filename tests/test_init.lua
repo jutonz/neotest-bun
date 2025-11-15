@@ -22,7 +22,7 @@ end
 
 T["adapter.is_test_file"]["is true if the file ends in .test.tsx"] = function()
   local path = Helpers.getFixturePath("bun_tests/tests/simple.test.tsx")
-  MiniTest.expect.equality(adapter.is_test_file(path), false)
+  MiniTest.expect.equality(adapter.is_test_file(path), true)
 end
 
 T["adapter.is_test_file"]["is true if the file ends in .test.ts"] = function()
