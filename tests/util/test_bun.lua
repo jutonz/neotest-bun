@@ -75,13 +75,13 @@ T["bun.parseClassname()"]["doesn't modify classnames which aren't nested"] = fun
 end
 
 T["bun.xmlToResults()"]["parses junit with a single failure"] = function()
-  local xml = Helpers.readFixtureFile("junit/single-failure.xml")
+  local xml = Helpers.readFixtureFile("junit/single-failure.test.ts.xml")
   local root = "/root/path"
 
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::marks all providers as Active"] = {
+    [root .. "/tests/single-failure.test.ts::::it doesn't work"] = {
       status = "failed",
     },
   }
@@ -89,16 +89,16 @@ T["bun.xmlToResults()"]["parses junit with a single failure"] = function()
 end
 
 T["bun.xmlToResults()"]["parses junit with a multiple skipped tests"] = function()
-  local xml = Helpers.readFixtureFile("junit/two-skipped.xml")
+  local xml = Helpers.readFixtureFile("junit/two-skipped.test.ts.xml")
   local root = "/root/path"
 
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::has an empty state if there are no providers"] = {
+    [root .. "/tests/two-skipped.test.ts::::first"] = {
       status = "skipped",
     },
-    [root .. "/test/frontend/pages/Providers/Index.test.tsx::Index::marks all providers as Active"] = {
+    [root .. "/tests/two-skipped.test.ts::::second"] = {
       status = "skipped",
     },
   }
