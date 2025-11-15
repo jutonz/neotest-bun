@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="bun test" tests="1" assertions="1" failures="0" skipped="0" time="0.015176">
+  <testsuite name="tests/one-passed.test.ts" file="tests/one-passed.test.ts" tests="1" assertions="1" failures="0" skipped="0" time="0" hostname="Justins-MacBook-Pro.local">
+    <testcase name="it works" classname="" time="0" file="tests/one-passed.test.ts" line="3" assertions="1" />
+  </testsuite>
+</testsuites>

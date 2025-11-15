@@ -106,7 +106,7 @@ T["bun.xmlToResults()"]["parses junit with a multiple skipped tests"] = function
 end
 
 T["bun.xmlToResults()"]["considers a test to pass if it's not skipped or failed"] = function()
-  local xml = Helpers.readFixtureFile("junit/one-passed.xml")
+  local xml = Helpers.readFixtureFile("junit/one-passed.ts.xml")
   local root = "/root/path"
 
   local results = bun.xmlToResults(root, xml)
