@@ -16,6 +16,7 @@ local T = MiniTest.new_set({
 
 T["adapter.is_test_file"] = MiniTest.new_set()
 T["adapter.discover_positions"] = MiniTest.new_set()
+T["adapter.build_spec"] = MiniTest.new_set()
 
 T["adapter.is_test_file"]["is false if the file doesn't exist"] = function()
   MiniTest.expect.equality(adapter.is_test_file(nil), false)
@@ -85,6 +86,16 @@ T["adapter.discover_positions"]["builds simple positions"] = function()
       },
     },
   })
+end
+
+T["adapter.build_spec"]["is nil if the tree is nil"] = function()
+  local tree = nil
+  local strategy = "something"
+  local args = { tree, strategy }
+
+  local spec = adapter.build_spec(args)
+
+  MiniTest.expect.equality(spec, nil)
 end
 
 return T
