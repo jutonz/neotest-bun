@@ -43,7 +43,7 @@ T["adapter.discover_positions"]["builds simple positions"] = function()
   child.lua([[
     require("nio").run(function()
       local adapter = require("neotest-bun")
-      local test = "simple.test.ts"
+      local test = "one-passed.test.ts"
       local ok, err = pcall(function()
         vim.b.result = adapter.discover_positions(test):to_list()
       end)
@@ -59,30 +59,20 @@ T["adapter.discover_positions"]["builds simple positions"] = function()
 
   MiniTest.expect.equality(child.b.result, {
     {
-      id = "simple.test.ts",
-      name = "simple.test.ts",
-      path = "simple.test.ts",
-      range = { 0, 0, 7, 0 },
+      id = "one-passed.test.ts",
+      name = "one-passed.test.ts",
+      path = "one-passed.test.ts",
+      range = { 0, 0, 5, 0 },
       type = "file",
     },
     {
       {
-        id = "simple.test.ts::something",
+        id = "one-passed.test.ts::it works",
         is_parameterized = false,
-        name = "something",
-        path = "simple.test.ts",
-        range = { 2, 0, 6, 2 },
-        type = "namespace",
-      },
-      {
-        {
-          id = "simple.test.ts::something::2 + 2",
-          is_parameterized = false,
-          name = "2 + 2",
-          path = "simple.test.ts",
-          range = { 3, 2, 5, 4 },
-          type = "test",
-        },
+        name = "it works",
+        path = "one-passed.test.ts",
+        range = { 2, 0, 4, 2 },
+        type = "test",
       },
     },
   })
