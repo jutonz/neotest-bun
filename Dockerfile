@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -20,7 +20,7 @@ WORKDIR /workspace
 
 COPY . .
 
-ENV NVIM_APPNAME=nvim-neotest-bun-test
+ENV NVIM_APPNAME=nvim-neotest-bun-test-docker
 ENV XDG_CONFIG_HOME=/tmp/nvim-test/.config
 ENV XDG_DATA_HOME=/tmp/nvim-test/.local/share
 ENV XDG_STATE_HOME=/tmp/nvim-test/.local/state

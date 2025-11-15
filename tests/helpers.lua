@@ -221,4 +221,20 @@ Helpers.readFixtureFile = function(path)
   return content
 end
 
+Helpers.waitFor = function(fn, timeout)
+  local interval = 50
+  local totalWaited = 0
+  local result = fn()
+
+  while not result and totalWaited < timeout do
+    vim.loop.sleep(interval)
+    totalWaited = totalWaited + interval
+    result = fn()
+  end
+
+  if not result then
+    error("waitFor did not resolve in time")
+  end
+end
+
 return Helpers

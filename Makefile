@@ -5,11 +5,12 @@ all: documentation lint luals test
 clean:
 	rm -rf ./tmp
 
-# runs all the test files.
+NVIM_APPNAME ?= nvim-neotest-bun-test
+
 test:
 	nvim --version | head -n 1 && echo ''
 	mkdir -p ./tmp
-	NVIM_APPNAME=nvim-neotest-bun-test \
+	NVIM_APPNAME=$(NVIM_APPNAME) \
 	XDG_CONFIG_HOME=$$(pwd)/tmp/.config \
 	XDG_DATA_HOME=$$(pwd)/tmp/.local/share \
 	XDG_STATE_HOME=$$(pwd)/tmp/.local/state \
