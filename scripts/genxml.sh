@@ -32,6 +32,9 @@ for test_file in tests/*.test.ts tests/*.test.tsx; do
   # Allow non-zero exit status (test failures are expected)
   bun test "$test_file" --reporter=junit --reporter-outfile="$output_file" || true
 
+  # Normalize all time fields to "1" to avoid unnecessary churn
+  sed -i '' 's/time="[^"]*"/time="1"/g' "$output_file"
+
   echo "Generated $output_file"
   echo ""
 done
