@@ -61,7 +61,7 @@ if #vim.api.nvim_list_uis() == 0 then
 
   -- Ensure required treesitter parsers are installed
   require("nvim-treesitter.configs").setup({
-    ensure_installed = {"typescript"},
-    sync_install = true
+    ensure_installed = { "typescript" },
+    sync_install = true,
   })
 end

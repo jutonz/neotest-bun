@@ -62,7 +62,7 @@ T["adapter.discover_positions"]["builds simple positions"] = function()
       name = "simple.test.ts",
       path = "simple.test.ts",
       range = { 0, 0, 7, 0 },
-      type = "file"
+      type = "file",
     },
     {
       {
@@ -71,7 +71,7 @@ T["adapter.discover_positions"]["builds simple positions"] = function()
         name = "something",
         path = "simple.test.ts",
         range = { 2, 0, 6, 2 },
-        type = "namespace"
+        type = "namespace",
       },
       {
         {
@@ -80,10 +80,10 @@ T["adapter.discover_positions"]["builds simple positions"] = function()
           name = "2 + 2",
           path = "simple.test.ts",
           range = { 3, 2, 5, 4 },
-          type = "test"
-        }
-      }
-    }
+          type = "test",
+        },
+      },
+    },
   })
 end
 

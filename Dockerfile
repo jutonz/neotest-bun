@@ -21,10 +21,6 @@ WORKDIR /workspace
 COPY . .
 
 ENV NVIM_APPNAME=nvim-neotest-bun-test-docker
-ENV XDG_CONFIG_HOME=/tmp/nvim-test/.config
-ENV XDG_DATA_HOME=/tmp/nvim-test/.local/share
-ENV XDG_STATE_HOME=/tmp/nvim-test/.local/state
-ENV XDG_CACHE_HOME=/tmp/nvim-test/.cache
 
 RUN mkdir -p /tmp/nvim-test/.config /tmp/nvim-test/.local/share /tmp/nvim-test/.local/state /tmp/nvim-test/.cache
 
