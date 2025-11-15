@@ -15,7 +15,8 @@ mkdir -p "$JUNIT_DIR"
 # Change to the bun_tests directory (where package.json is)
 cd "$BUN_TESTS_DIR"
 
-# Find and iterate over all test files
+# Enable nullglob to handle empty matches cleanly
+shopt -s nullglob
 for test_file in tests/*.test.ts tests/*.test.tsx; do
   # Skip if no files match the pattern
   [ -e "$test_file" ] || continue
@@ -33,7 +34,7 @@ for test_file in tests/*.test.ts tests/*.test.tsx; do
   bun test "$test_file" --reporter=junit --reporter-outfile="$output_file" || true
 
   # Normalize all time fields to "1" to avoid unnecessary churn
-  sed -i '' 's/time="[^"]*"/time="1"/g' "$output_file"
+  perl -i -pe 's/time="[^"]*"/time="1"/g' "$output_file"
 
   echo "Generated $output_file"
   echo ""
