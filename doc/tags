@@ -4,3 +4,6 @@ NeotestBun.options	neotest-bun.txt	/*NeotestBun.options*
 NeotestBun.setup()	neotest-bun.txt	/*NeotestBun.setup()*
 NeotestBun.toggle()	neotest-bun.txt	/*NeotestBun.toggle()*
 bun.isBunProject()	neotest-bun.txt	/*bun.isBunProject()*
+getSingleChild()	neotest-bun.txt	/*getSingleChild()*
+stripWS()	neotest-bun.txt	/*stripWS()*
+tree.cdata	neotest-bun.txt	/*tree.cdata*

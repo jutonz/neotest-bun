@@ -1,60 +1,6 @@
---- @module Module providing a non-validating XML stream parser in Lua.
---
---  Features:
---  =========
---
---      * Tokenises well-formed XML (relatively robustly)
---      * Flexible handler based event API (see below)
---      * Parses all XML Infoset elements - ie.
---          - Tags
---          - Text
---          - Comments
---          - CDATA
---          - XML Decl
---          - Processing Instructions
---          - DOCTYPE declarations
---      * Provides limited well-formedness checking
---        (checks for basic syntax & balanced tags only)
---      * Flexible whitespace handling (selectable)
---      * Entity Handling (selectable)
---
---  Limitations:
---  ============
---
---      * Non-validating
---      * No charset handling
---      * No namespace support
---      * Shallow well-formedness checking only (fails
---        to detect most semantic errors)
---
---  API:
---  ====
---
---  The parser provides a partially object-oriented API with
---  functionality split into tokeniser and handler components.
---
---  The handler instance is passed to the tokeniser and receives
---  callbacks for each XML element processed (if a suitable handler
---  function is defined). The API is conceptually similar to the
---  SAX API but implemented differently.
---
---  XML data is passed to the parser instance through the 'parse'
---  method (Note: must be passed a single string currently)
---
---  License:
---  ========
---
---      This code is freely distributable under the terms of the [MIT license](LICENSE).
---
---
---@author Paul Chakravarti (paulc@passtheaardvark.com)
---@author Manoel Campos da Silva Filho
 local xml2lua = { _VERSION = "1.6-1" }
 local XmlParser = require("neotest-bun.vendor.xml2lua.XmlParser")
 
----Recursivelly prints a table in an easy-to-ready format
---@param tb The table to be printed
---@param level the indentation level to start with
 local function printableInternal(tb, level)
   if tb == nil then
      return
@@ -72,13 +18,6 @@ local function printableInternal(tb, level)
   end
 end
 
----Instantiates a XmlParser object to parse a XML string
---@param handler Handler module to be used to convert the XML string
---to another formats. See the available handlers at the handler directory.
--- Usually you get an instance to a handler module using, for instance:
--- local handler = require("xmlhandler/tree").
---@return a XmlParser object used to parse the XML
---@see XmlParser
 function xml2lua.parser(handler)
     if handler == xml2lua then
         error("You must call xml2lua.parse(handler) instead of xml2lua:parse(handler)")
@@ -170,7 +109,6 @@ local function getSingleChild(tb)
   return nil
 end
 
----Gets the first value of a given table
 local function getFirstValue(tb)
   if type(tb) == "table" then
     for _, v in pairs(tb) do
