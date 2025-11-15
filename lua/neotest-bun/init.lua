@@ -51,11 +51,18 @@ NeotestBun.is_test_file = function(file_path)
     return false
   end
 
-  if string.find(file_path, ".test.tsx") then
-    return true
-  else
-    return false
+  local patterns = {
+    "%.test%.ts$",
+    "%.tes%%.tsx$",
+  }
+
+  for _, pattern in ipairs(patterns) do
+    if file_path:match(pattern) then
+      return true
+    end
   end
+
+  return false
 end
 
 NeotestBun.discover_positions = function(path)
