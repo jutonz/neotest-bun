@@ -54,10 +54,38 @@ jobs:
       - name: check docs diff
         run: exit $(git status --porcelain doc | wc -l | tr -d " ")
 
+  fixtures:
+    runs-on: ubuntu-latest
+    name: fixtures
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: install bun test dependencies
+        run: cd tests/fixtures/bun_tests && bun install
+
+      - name: generate xml fixtures
+        run: |
+          unset GITHUB_ACTIONS
+          unset CI
+          ./scripts/genxml.sh
+
+      - name: check fixtures diff
+        run: |
+          if [ -n "$(git status --porcelain tests/fixtures/junit)" ]; then
+            echo "XML fixtures are out of sync. Please run './scripts/genxml.sh' and commit the changes."
+            git status tests/fixtures/junit
+            git diff tests/fixtures/junit
+            exit 1
+          fi
+
   tests:
     needs:
       - lint
       - documentation
+      - fixtures
     runs-on: ubuntu-latest
     timeout-minutes: 1
     strategy:
@@ -108,6 +136,7 @@ jobs:
     needs:
       - lint
       - documentation
+      - fixtures
     runs-on: ubuntu-latest
     timeout-minutes: 1
     continue-on-error: true

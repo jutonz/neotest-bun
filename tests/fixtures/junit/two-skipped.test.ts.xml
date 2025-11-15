@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites name="bun test" tests="2" assertions="0" failures="0" skipped="2" time="1">
-  <testsuite name="tests/two-skipped.test.ts" file="tests/two-skipped.test.ts" tests="2" assertions="0" failures="0" skipped="2" time="1" hostname="Justins-MacBook-Pro.local">
+  <testsuite name="tests/two-skipped.test.ts" file="tests/two-skipped.test.ts" tests="2" assertions="0" failures="0" skipped="2" time="1" hostname="hostname">
     <testcase name="first" classname="" time="1" file="tests/two-skipped.test.ts" line="3" assertions="0">
       <skipped />
     </testcase>

@@ -12,6 +12,9 @@ JUNIT_DIR="$PROJECT_ROOT/tests/fixtures/junit"
 # Ensure junit directory exists
 mkdir -p "$JUNIT_DIR"
 
+# Delete all existing XML files in the directory
+rm -f "$JUNIT_DIR"/*.xml
+
 # Change to the bun_tests directory (where package.json is)
 cd "$BUN_TESTS_DIR"
 
@@ -35,6 +38,9 @@ for test_file in tests/*.test.ts tests/*.test.tsx; do
 
   # Normalize all time fields to "1" to avoid unnecessary churn
   perl -i -pe 's/time="[^"]*"/time="1"/g' "$output_file"
+
+  # Normalize all hostname fields to "hostname" to avoid unnecessary churn
+  perl -i -pe 's/hostname="[^"]*"/hostname="hostname"/g' "$output_file"
 
   echo "Generated $output_file"
   echo ""
