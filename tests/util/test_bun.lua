@@ -120,39 +120,30 @@ T["bun.xmlToResults()"]["considers a test to pass if it's not skipped or failed"
 end
 
 T["bun.xmlToResults()"]["handles output with two testsuites"] = function()
-  local xml = Helpers.readFixtureFile("junit/two-testsuites.xml")
+  local xml = Helpers.readFixtureFile("junit/two-testsuites.test.ts.xml")
   local root = "/root/path"
 
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .. "/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from a minimally filled ModelDetail"] = {
-      status = "passed",
+    [root .. "/tests/two-testsuites.test.ts::first suite::first test"] = {
+      status = "skipped",
     },
-    [root .. "/test/frontend/pages/MarketplaceModels/DetailsDrawer.test.tsx::DetailsDrawer::renders attributes from the ModelDetail"] = {
-      status = "passed",
-    },
-    [root .. "/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from a Legacy System Subscription"] = {
-      status = "passed",
-    },
-    [root .. "/test/frontend/pages/MarketplaceModels/SubscriptionDrawer.test.tsx::SubscriptionDrawer::renders attributes from the Subscription"] = {
-      status = "passed",
+    [root .. "/tests/two-testsuites.test.ts::second suite::second test"] = {
+      status = "skipped",
     },
   }
   MiniTest.expect.equality(expected, results)
 end
 
 T["bun.xmlToResults()"]["handles output with nested describe blocks"] = function()
-  local xml = Helpers.readFixtureFile("junit/nested-describe.xml")
+  local xml = Helpers.readFixtureFile("junit/describe.test.ts.xml")
   local root = "/root/path"
 
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .. "/test/frontend/components/Layout/AppRoot.test.tsx::AppRoot::when the component is rendered::renders the marketplace navigation for marketplace users"] = {
-      status = "passed",
-    },
-    [root .. "/test/frontend/components/Layout/AppRoot.test.tsx::AppRoot::when the component is rendered::renders the service portal navigation for marketplace  and service portal users"] = {
+    [root .. "/tests/describe.test.ts::the describe block::the test"] = {
       status = "passed",
     },
   }
