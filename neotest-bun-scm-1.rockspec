@@ -11,7 +11,6 @@ description = {
 }
 dependencies = {
   "lua ~> 5.1",
-  "xml2lua",
 }
 build = {
   type = "builtin",
@@ -21,7 +20,10 @@ build = {
     ["neotest-bun.main"] = "lua/neotest-bun/main.lua",
     ["neotest-bun.state"] = "lua/neotest-bun/state.lua",
     ["neotest-bun.util.bun"] = "lua/neotest-bun/util/bun.lua",
-    ["neotest-bun.util.log"] = "lua/neotest-bun/util/log.lua"
+    ["neotest-bun.util.log"] = "lua/neotest-bun/util/log.lua",
+    ["neotest-bun.vendor.xml2lua.xml2lua"] = "lua/neotest-bun/vendor/xml2lua/xml2lua.lua",
+    ["neotest-bun.vendor.xml2lua.XmlParser"] = "lua/neotest-bun/vendor/xml2lua/XmlParser.lua",
+    ["neotest-bun.vendor.xml2lua.xmlhandler.tree"] = "lua/neotest-bun/vendor/xml2lua/xmlhandler/tree.lua"
   },
   copy_directories = {
     "doc",
