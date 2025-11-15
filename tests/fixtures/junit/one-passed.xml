@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="bun test" tests="1" assertions="1" failures="0" skipped="0" time="0.792496">
-  <testsuite name="test/frontend/pages/Providers/Index.test.tsx" tests="1" assertions="1" failures="0" skipped="0" time="0.187" hostname="Justins-MacBook-Pro.local">
-    <testcase name="renders a list of Providers" classname="Index" time="0.030906" file="test/frontend/pages/Providers/Index.test.tsx" assertions="1" />
-  </testsuite>
-</testsuites>
