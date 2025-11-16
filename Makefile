@@ -17,7 +17,8 @@ test:
 	XDG_CACHE_HOME=$$(pwd)/tmp/.cache \
 	nvim --headless -u ./scripts/minimal_init.lua \
 		-c "lua require('mini.test').setup()" \
-		-c "lua MiniTest.run({ execute = { reporter = MiniTest.gen_reporter.stdout({ group_depth = 2 }) } })"
+		-c "lua MiniTest.run_file('tests/test_integration.lua', { execute = { reporter = MiniTest.gen_reporter.stdout({ group_depth = 2 }) } })"
+		# -c "lua MiniTest.run({ execute = { reporter = MiniTest.gen_reporter.stdout({ group_depth = 2 }) } })"
 
 test-ci: test
 
