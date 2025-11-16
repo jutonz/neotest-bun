@@ -51,6 +51,15 @@ require("lazy").setup({
 
 require("lazy").install({ wait = true })
 
+-- Ensure required treesitter parsers are installed
+require("nvim-treesitter.configs").setup({
+  ensure_installed = { "typescript" },
+  sync_install = true,
+})
+
+vim.opt.swapfile = false
+vim.o.statusline = "%<%f %l,%c%V"
+
 -- Update runtimepath so lua files can be required in tests.
 vim.opt.rtp:append(plugin_root)
 
@@ -66,17 +75,4 @@ if #vim.api.nvim_list_uis() == 0 then
 
   -- Set up 'mini.doc'
   require("mini.doc").setup()
-
-  -- Ensure required treesitter parsers are installed
-  require("nvim-treesitter.configs").setup({
-    ensure_installed = { "typescript" },
-    sync_install = true,
-  })
-  -- require("neotest-bun")
-
-  -- require("neotest").setup({
-  --   adapters = {
-  --     require("neotest-bun")
-  --   }
-  -- })
 end

@@ -237,4 +237,61 @@ Helpers.waitFor = function(fn, timeout)
   end
 end
 
+Helpers.runCurrentTestFile = function(child)
+  Helpers.setupNeotest(child)
+
+  child.b.err = false
+  child.lua([[
+    require("nio").run(function()
+      local ok, err = pcall(function()
+        require("neotest").run.run(vim.fn.expand("%"))
+      end)
+
+      if not ok then
+        vim.b.err = err
+      end
+    end)
+  ]])
+
+  Helpers.waitForTestCompletion(child)
+  MiniTest.expect.equality(child.b.err, false)
+end
+
+Helpers.setupNeotest = function(child)
+  child.lua([[
+    require("neotest").setup({
+      adapters = {
+        require("neotest-bun")
+      }
+    })
+    require("neotest.logging"):set_level("TRACE")
+  ]])
+end
+
+Helpers.waitForTestCompletion = function(child)
+  Helpers.waitFor(function()
+    child.lua([[
+      local ok, err = pcall(function()
+        local adapter = require("neotest").state.adapter_ids()[1]
+        vim.b.__status_counts = require("neotest").state.status_counts(adapter)
+      end)
+
+      if not ok then
+        vim.b.__err = err
+      end
+    ]])
+
+    if child.b.__err ~= vim.NIL then
+      error("Received an error waiting for test completion: " .. child.b.__err)
+    end
+
+    local total = (child.b.__status_counts ~= vim.NIL and child.b.__status_counts.total) or 0
+    local running = (child.b.__status_counts ~= vim.NIL and child.b.__status_counts.running) or 0
+    print("\n\n\n")
+    print(vim.inspect(child.b.__status_counts))
+    print("\n\n\n")
+    return total > 0 and running == 0
+  end, 5000)
+end
+
 return Helpers
