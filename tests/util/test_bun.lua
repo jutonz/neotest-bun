@@ -81,7 +81,7 @@ T["bun.xmlToResults()"]["parses junit with a single failure"] = function()
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .. "/tests/single-failure.test.ts::::it doesn't work"] = {
+    [root .. "/tests/single-failure.test.ts::it doesn't work"] = {
       status = "failed",
     },
   }
@@ -95,10 +95,10 @@ T["bun.xmlToResults()"]["parses junit with a multiple skipped tests"] = function
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .. "/tests/two-skipped.test.ts::::first"] = {
+    [root .. "/tests/two-skipped.test.ts::first"] = {
       status = "skipped",
     },
-    [root .. "/tests/two-skipped.test.ts::::second"] = {
+    [root .. "/tests/two-skipped.test.ts::second"] = {
       status = "skipped",
     },
   }
@@ -112,7 +112,7 @@ T["bun.xmlToResults()"]["considers a test to pass if it's not skipped or failed"
   local results = bun.xmlToResults(root, xml)
 
   local expected = {
-    [root .. "/tests/one-passed.test.ts::::it works"] = {
+    [root .. "/tests/one-passed.test.ts::it works"] = {
       status = "passed",
     },
   }

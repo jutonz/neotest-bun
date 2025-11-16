@@ -108,7 +108,11 @@ function bun.xmlToResults(root, xml)
         end
 
         local classname = bun.parseClassname(attrs.classname)
-        local key = root .. "/" .. attrs.file .. "::" .. classname .. "::" .. attrs.name
+        local key = root .. "/" .. attrs.file .. "::"
+        if classname ~= "" then
+          key = key .. classname .. "::"
+        end
+        key = key .. attrs.name
 
         tests[key] = {
           status = status,
