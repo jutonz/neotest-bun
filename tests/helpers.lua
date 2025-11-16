@@ -262,7 +262,25 @@ Helpers.setupNeotest = function(child)
     require("neotest").setup({
       adapters = {
         require("neotest-bun")
-      }
+      },
+      icons = {
+        child_indent = "│",
+        child_prefix = "├",
+        collapsed = "─",
+        expanded = "╮",
+        failed = "N",
+        final_child_indent = " ",
+        final_child_prefix = "╰",
+        non_collapsible = "─",
+        notify = "",
+        passed = "Y",
+        running = "R",
+        running_animated = { "/", "|", "\\", "-", "/", "|", "\\", "-" },
+        skipped = "X",
+        test = "",
+        unknown = "",
+        watching = ""
+      },
     })
     require("neotest.logging"):set_level("TRACE")
   ]])
