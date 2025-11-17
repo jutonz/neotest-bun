@@ -39,7 +39,13 @@ require("lazy").setup({
         "nvim-treesitter/nvim-treesitter",
       },
     },
-    { "echasnovski/mini.nvim", version = "*" },
+    {
+      "echasnovski/mini.nvim",
+      -- Removing version temporarily to get `ignore_attr` and `ignore_text`
+      -- options to `reference_screenshot`.
+      -- Add this back once mini.nvim 0.17 is released.
+      -- version = "*"
+    },
     { dir = plugin_root },
   },
   rocks = {
@@ -50,6 +56,15 @@ require("lazy").setup({
 })
 
 require("lazy").install({ wait = true })
+
+-- Ensure required treesitter parsers are installed
+require("nvim-treesitter.configs").setup({
+  ensure_installed = { "typescript" },
+  sync_install = true,
+})
+
+vim.opt.swapfile = false
+vim.o.statusline = "%<%f %l,%c%V"
 
 -- Update runtimepath so lua files can be required in tests.
 vim.opt.rtp:append(plugin_root)
@@ -66,10 +81,4 @@ if #vim.api.nvim_list_uis() == 0 then
 
   -- Set up 'mini.doc'
   require("mini.doc").setup()
-
-  -- Ensure required treesitter parsers are installed
-  require("nvim-treesitter.configs").setup({
-    ensure_installed = { "typescript" },
-    sync_install = true,
-  })
 end

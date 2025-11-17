@@ -1,5 +1,3 @@
-==============================================================================
-------------------------------------------------------------------------------
                                                            *NeotestBun.toggle()*
                              `NeotestBun.toggle`()
 Toggle the plugin by calling the `enable`/`disable` methods respectively.
