@@ -107,7 +107,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: logs
+          name: logs-nvim-${{ matrix.neovim_version }}
           path: tmp/.local/state/nvim-neotest-bun-test
 
   tests-nightly:
@@ -159,6 +159,13 @@ jobs:
 
       - name: run tests
         run: make test-ci
+
+      - name: Archive logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: logs-nvim-nightly
+          path: tmp/.local/state/nvim-neotest-bun-test
 
   # release:
   #   name: release
