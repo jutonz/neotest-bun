@@ -305,9 +305,9 @@ Helpers.waitForTestCompletion = function(child)
 
     local total = (child.b.__status_counts ~= vim.NIL and child.b.__status_counts.total) or 0
     local running = (child.b.__status_counts ~= vim.NIL and child.b.__status_counts.running) or 0
-    print("\n\n\n")
-    print(vim.inspect(child.b.__status_counts))
-    print("\n\n\n")
+    -- print("\n\n\n")
+    -- print(vim.inspect(child.b.__status_counts))
+    -- print("\n\n\n")
     return total > 0 and running == 0
   end, 5000)
 end
