@@ -84,6 +84,8 @@ function bun.parseClassname(classname)
 end
 
 function bun.xmlToResults(root, xml)
+  -- require("neotest.logging").debug("xml is\nn", xml)
+
   local tests = {}
 
   local handler = TreeHandler:new()
@@ -113,6 +115,11 @@ function bun.xmlToResults(root, xml)
           key = key .. classname .. "::"
         end
         key = key .. attrs.name
+
+        -- require("neotest.logging").debug("test output for ", key)
+        -- require("neotest.logging").debug(vim.inspect(testcase))
+        -- require("neotest.logging").debug("calculated status of: ", status)
+        -- require("neotest.logging").debug("root is", root)
 
         tests[key] = {
           status = status,

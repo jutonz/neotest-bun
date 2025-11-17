@@ -39,7 +39,13 @@ require("lazy").setup({
         "nvim-treesitter/nvim-treesitter",
       },
     },
-    { "echasnovski/mini.nvim", version = "*" },
+    {
+      "echasnovski/mini.nvim",
+      -- Removing version temporarily to get `ignore_attr` and `ignore_text`
+      -- options to `reference_screenshot`.
+      -- Add this back once mini.nvim 0.17 is released.
+      -- version = "*"
+    },
     { dir = plugin_root },
   },
   rocks = {

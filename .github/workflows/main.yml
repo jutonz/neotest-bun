@@ -64,6 +64,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: oven-sh/setup-bun@v2
+
       - run: date +%F > todays-date
 
       - name: restore luals cache
@@ -101,6 +103,13 @@ jobs:
       - name: Test packing luarock
         run: luarocks pack neotest-bun-scm-1.rockspec
 
+      - name: Archive logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: logs
+          path: tmp/.local/state/nvim-neotest-bun-test
+
   tests-nightly:
     runs-on: ubuntu-latest
     timeout-minutes: 1
@@ -108,6 +117,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
 
       - run: date +%F > todays-date
 
