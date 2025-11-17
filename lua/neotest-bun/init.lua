@@ -1,6 +1,6 @@
 local main = require("neotest-bun/main")
 local async = require("neotest/async")
-local config = require("neotest-bun/config")
+local config = require("neotest-bun.config")
 local bun = require("neotest-bun/util/bun")
 local lib = require("neotest/lib")
 local neotestFileUtil = require("neotest/lib/file")

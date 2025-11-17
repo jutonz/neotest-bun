@@ -34,7 +34,7 @@ end
 
 --- Define your neotest-bun setup.
 ---
----@param options table Module config table. See |NeotestBun.options|.
+---@param options table|nil Module config table. See |NeotestBun.options|.
 ---
 ---@usage `require("neotest-bun").setup()` (add `{}` with your |NeotestBun.options| table)
 function NeotestBun.setup(options)
