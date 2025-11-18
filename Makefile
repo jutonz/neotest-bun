@@ -10,6 +10,7 @@ NVIM_APPNAME ?= nvim-neotest-bun-test
 test:
 	nvim --version | head -n 1 && echo ''
 	mkdir -p ./tmp
+	rm -f ./tmp/.local/state/${NVIM_APPNAME}/neotest.log
 	NVIM_APPNAME=$(NVIM_APPNAME) \
 	XDG_CONFIG_HOME=$$(pwd)/tmp/.config \
 	XDG_DATA_HOME=$$(pwd)/tmp/.local/share \

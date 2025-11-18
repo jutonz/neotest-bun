@@ -1,6 +1,6 @@
 local xml2lua = require("neotest-bun.vendor.xml2lua.xml2lua")
 local TreeHandler = require("neotest-bun.vendor.xml2lua.xmlhandler.tree")
--- local logger = require("neotest.logging")
+local logger = require("neotest.logging")
 
 local bun = {}
 
@@ -84,7 +84,9 @@ function bun.parseClassname(classname)
 end
 
 function bun.xmlToResults(root, xml)
-  -- require("neotest.logging").debug("xml is\nn", xml)
+  if require("neotest-bun.config").options.debug then
+    logger.debug("xml is\n", xml)
+  end
 
   local tests = {}
 
@@ -116,10 +118,12 @@ function bun.xmlToResults(root, xml)
         end
         key = key .. attrs.name
 
-        -- require("neotest.logging").debug("test output for ", key)
-        -- require("neotest.logging").debug(vim.inspect(testcase))
-        -- require("neotest.logging").debug("calculated status of: ", status)
-        -- require("neotest.logging").debug("root is", root)
+        if require("neotest-bun.config").options.debug then
+          logger.debug("test output for ", key)
+          logger.debug(vim.inspect(testcase))
+          logger.debug("calculated status of: ", status)
+          logger.debug("root is", root)
+        end
 
         tests[key] = {
           status = status,

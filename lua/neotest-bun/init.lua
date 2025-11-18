@@ -262,4 +262,11 @@ end
 
 _G.NeotestBun = NeotestBun
 
+setmetatable(NeotestBun, {
+  __call = function(self, opts)
+    self.setup(opts)
+    return self
+  end,
+})
+
 return _G.NeotestBun
