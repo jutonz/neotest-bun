@@ -261,7 +261,7 @@ Helpers.setupNeotest = function(child)
   child.lua([[
     require("neotest").setup({
       adapters = {
-        require("neotest-bun")
+        require("neotest-bun")({ debug = true })
       },
       icons = {
         child_indent = "│",
@@ -281,8 +281,8 @@ Helpers.setupNeotest = function(child)
         unknown = "",
         watching = ""
       },
+      log_level = "trace"
     })
-    require("neotest.logging"):set_level("TRACE")
   ]])
 end
 

@@ -35,7 +35,7 @@ Default values:
 Define your neotest-bun setup.
 
 Parameters ~
-{options} `(table)` Module config table. See |NeotestBun.options|.
+{options} `(table|nil)` Module config table. See |NeotestBun.options|.
 
 Usage ~
 `require("neotest-bun").setup()` (add `{}` with your |NeotestBun.options| table)
