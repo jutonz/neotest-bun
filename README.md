@@ -36,3 +36,22 @@ require("neotest").setup({
 ```
 
 [lazy.nvim]: https://github.com/folke/lazy.nvim
+
+## Configuration
+
+You can pass in config options when requiring the adapter.
+
+```lua
+require("neotest-bun")({
+  additional_args = { "--coverage" },
+})
+```
+
+Here are the defaults:
+
+```lua
+{
+  test_command = "bun test",
+  additional_args = {},
+}
+```

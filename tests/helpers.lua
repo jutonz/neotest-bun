@@ -261,7 +261,9 @@ Helpers.setupNeotest = function(child)
   child.lua([[
     require("neotest").setup({
       adapters = {
-        require("neotest-bun")({ debug = true })
+        require("neotest-bun")({
+          debug = true,
+        })
       },
       icons = {
         child_indent = "│",

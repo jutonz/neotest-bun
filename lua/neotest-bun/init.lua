@@ -173,6 +173,7 @@ function NeotestBun.build_position(file_path, source, captured_nodes)
 end
 
 NeotestBun.build_spec = function(args)
+  local options = require("neotest-bun.config").options
   local results_path = async.fn.tempname() .. ".xml"
   local tree = args.tree
 
@@ -181,12 +182,13 @@ NeotestBun.build_spec = function(args)
   end
 
   local pos = args.tree:data()
-  local binary = "bun test"
+  local binary = options.test_command
   local command = vim.split(binary, "%s+")
   vim.list_extend(command, {
     "--reporter=junit",
     "--reporter-outfile=" .. results_path,
   })
+  vim.list_extend(command, options.additional_args)
 
   local testNamePattern = nil
 
@@ -212,13 +214,6 @@ NeotestBun.build_spec = function(args)
   vim.list_extend(command, {
     vim.fs.normalize(pos.path),
   })
-  --
-  -- command = vim.split("bun test test/frontend/pages/Providers/Index.test.tsx", "%s+")
-  -- vim.list_extend(command, {
-  --   "-t=^ Index renders a list of Providers$",
-  --   "--reporter=junit",
-  --   "--reporter-outfile=" .. results_path,
-  -- })
 
   -- creating empty file for streaming results
   lib.files.write(results_path, "")
