@@ -10,6 +10,10 @@ local NeotestBun = {}
 NeotestBun.options = {
   -- Prints useful logs about what event are triggered, and reasons actions are executed.
   debug = false,
+  -- Command used to run bun tests.
+  test_command = "bun test",
+  -- Additional command line arguments to pass to the test command.
+  additional_args = {},
 }
 
 ---@private

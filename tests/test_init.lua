@@ -14,6 +14,12 @@ local T = MiniTest.new_set({
   },
 })
 
+local includes_pattern = function(list, pattern)
+  return vim.iter(list):any(function(v)
+    return v:match(pattern)
+  end)
+end
+
 T["adapter.is_test_file"] = MiniTest.new_set()
 T["adapter.discover_positions"] = MiniTest.new_set()
 T["adapter.build_spec"] = MiniTest.new_set()
@@ -86,6 +92,71 @@ T["adapter.build_spec"]["is nil if the tree is nil"] = function()
   local spec = adapter.build_spec(args)
 
   MiniTest.expect.equality(spec, nil)
+end
+
+T["adapter.build_spec"]["includes the correct reporter flags"] = function()
+  child.b.path = Helpers.getFixturePath("bun_tests/tests/one-passed.test.ts")
+
+  child.lua([[
+    local ok, err = pcall(function()
+      require("nio").run(function()
+        local adapter = require("neotest-bun")
+        local positions = adapter.discover_positions(vim.b.path):to_list()
+        local Tree = require("neotest.types").Tree
+        local tree = Tree.from_list(positions, function(pos)
+          return pos.id
+        end)
+        local spec = adapter.build_spec({ tree = tree })
+        vim.b.command = spec.command
+      end)
+    end)
+
+    if not ok then
+      vim.b.err = err
+    end
+  ]])
+
+  Helpers.waitFor(function()
+    return child.b.command ~= vim.NIL or child.b.err ~= vim.NIL
+  end, 2000)
+
+  MiniTest.expect.equality(child.b.err, vim.NIL)
+  local command = child.b.command
+  MiniTest.expect.equality(vim.tbl_contains(command, "--reporter=junit"), true)
+  MiniTest.expect.equality(includes_pattern(command, "^%-%-reporter%-outfile="), true)
+end
+
+T["adapter.build_spec"]["includes additional_args from config"] = function()
+  child.b.path = Helpers.getFixturePath("bun_tests/tests/one-passed.test.ts")
+
+  child.lua([[
+    local ok, err = pcall(function()
+      require("nio").run(function()
+        local adapter = require("neotest-bun")({
+          additional_args = { "--some-arg" },
+        })
+        local positions = adapter.discover_positions(vim.b.path):to_list()
+        local Tree = require("neotest.types").Tree
+        local tree = Tree.from_list(positions, function(pos)
+          return pos.id
+        end)
+        local spec = adapter.build_spec({ tree = tree })
+        vim.b.command = spec.command
+      end)
+    end)
+
+    if not ok then
+      vim.b.err = err
+    end
+  ]])
+
+  Helpers.waitFor(function()
+    return child.b.command ~= vim.NIL or child.b.err ~= vim.NIL
+  end, 2000)
+
+  MiniTest.expect.equality(child.b.err, vim.NIL)
+  local command = child.b.command
+  MiniTest.expect.equality(vim.tbl_contains(command, "--some-arg"), true)
 end
 
 return T
