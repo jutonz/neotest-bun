@@ -59,7 +59,7 @@ require("lazy").install({ wait = true })
 
 -- Ensure required treesitter parsers are installed
 require("nvim-treesitter.configs").setup({
-  ensure_installed = { "typescript" },
+  ensure_installed = { "typescript", "javascript" },
   sync_install = true,
 })
 

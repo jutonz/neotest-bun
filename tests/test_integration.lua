@@ -25,4 +25,14 @@ T["integration"]["tests/describe.test.ts"] = function()
   MiniTest.expect.reference_screenshot(screenshot, nil, { ignore_attr = true })
 end
 
+T["integration"]["tests/one-passed.test.js"] = function()
+  child.cmd("cd " .. Helpers.getFixturePath("bun_tests"))
+  child.cmd("e tests/one-passed.test.js")
+
+  Helpers.runCurrentTestFile(child)
+
+  local screenshot = child.get_screenshot()
+  MiniTest.expect.reference_screenshot(screenshot, nil, { ignore_attr = true })
+end
+
 return T

@@ -17,7 +17,7 @@ cd "$BUN_TESTS_DIR"
 
 # Enable nullglob to handle empty matches cleanly
 shopt -s nullglob
-for test_file in tests/*.test.ts tests/*.test.tsx; do
+for test_file in tests/*.test.ts tests/*.test.tsx tests/*.test.js tests/*.test.jsx; do
   # Skip if no files match the pattern
   [ -e "$test_file" ] || continue
 
