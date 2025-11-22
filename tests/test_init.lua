@@ -81,13 +81,13 @@ T["adapter.discover_positions"]["tests/one-passed.test.ts"] = function()
   })
 end
 
-T["adapter.discover_positions"]["tests/one-passed.test.js"] = function()
+T["adapter.discover_positions"]["tests/all-statuses.test.js"] = function()
   local tests_path = Helpers.getFixturePath("bun_tests/tests")
   child.cmd("cd " .. tests_path)
   child.lua([[
     require("nio").run(function()
       local adapter = require("neotest-bun")
-      local test = "one-passed.test.js"
+      local test = "all-statuses.test.js"
       local ok, err = pcall(function()
         vim.b.result = adapter.discover_positions(test):to_list()
       end)
@@ -103,19 +103,39 @@ T["adapter.discover_positions"]["tests/one-passed.test.js"] = function()
 
   MiniTest.expect.equality(child.b.result, {
     {
-      id = "one-passed.test.js",
-      name = "one-passed.test.js",
-      path = "one-passed.test.js",
-      range = { 0, 0, 5, 0 },
+      id = "all-statuses.test.js",
+      name = "all-statuses.test.js",
+      path = "all-statuses.test.js",
+      range = { 0, 0, 13, 0 },
       type = "file",
     },
     {
       {
-        id = "one-passed.test.js::it works",
+        id = "all-statuses.test.js::pass",
         is_parameterized = false,
-        name = "it works",
-        path = "one-passed.test.js",
+        name = "pass",
+        path = "all-statuses.test.js",
         range = { 2, 0, 4, 2 },
+        type = "test",
+      },
+    },
+    {
+      {
+        id = "all-statuses.test.js::skip",
+        is_parameterized = false,
+        name = "skip",
+        path = "all-statuses.test.js",
+        range = { 6, 0, 8, 2 },
+        type = "test",
+      },
+    },
+    {
+      {
+        id = "all-statuses.test.js::fail",
+        is_parameterized = false,
+        name = "fail",
+        path = "all-statuses.test.js",
+        range = { 10, 0, 12, 2 },
         type = "test",
       },
     },

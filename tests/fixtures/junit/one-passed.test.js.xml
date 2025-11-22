@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="bun test" tests="3" assertions="2" failures="1" skipped="1" time="1">
+  <testsuite name="tests/one-passed.test.js" file="tests/one-passed.test.js" tests="3" assertions="2" failures="1" skipped="1" time="1" hostname="Justins-MacBook-Pro.local">
+    <testcase name="pass" classname="" time="1" file="tests/one-passed.test.js" line="3" assertions="1" />
+    <testcase name="skip" classname="" time="1" file="tests/one-passed.test.js" line="7" assertions="0">
+      <skipped />
+    </testcase>
+    <testcase name="fail" classname="" time="1" file="tests/one-passed.test.js" line="11" assertions="1">
+      <failure type="AssertionError" />
+    </testcase>
+  </testsuite>
+</testsuites>

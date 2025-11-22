@@ -25,9 +25,9 @@ T["integration"]["tests/describe.test.ts"] = function()
   MiniTest.expect.reference_screenshot(screenshot, nil, { ignore_attr = true })
 end
 
-T["integration"]["tests/one-passed.test.js"] = function()
+T["integration"]["tests/all-statuses.test.js"] = function()
   child.cmd("cd " .. Helpers.getFixturePath("bun_tests"))
-  child.cmd("e tests/one-passed.test.js")
+  child.cmd("e tests/all-statuses.test.js")
 
   Helpers.runCurrentTestFile(child)
 
