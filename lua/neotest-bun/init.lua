@@ -54,6 +54,8 @@ NeotestBun.is_test_file = function(file_path)
   local patterns = {
     "%.test%.ts$",
     "%.test%.tsx$",
+    "%.test%.js$",
+    "%.test%.jsx$",
   }
 
   for _, pattern in ipairs(patterns) do

@@ -28,14 +28,11 @@ T["adapter.is_test_file"]["is false if the file doesn't exist"] = function()
   MiniTest.expect.equality(adapter.is_test_file(nil), false)
 end
 
-T["adapter.is_test_file"]["is true if the file ends in .test.tsx"] = function()
-  local path = Helpers.getFixturePath("bun_tests/tests/simple.test.tsx")
-  MiniTest.expect.equality(adapter.is_test_file(path), true)
-end
-
-T["adapter.is_test_file"]["is true if the file ends in .test.ts"] = function()
-  local path = Helpers.getFixturePath("bun_tests/tests/simple.test.ts")
-  MiniTest.expect.equality(adapter.is_test_file(path), true)
+T["adapter.is_test_file"]["is true if the file a supported extension"] = function()
+  MiniTest.expect.equality(adapter.is_test_file("tests/simple.test.ts"), true)
+  MiniTest.expect.equality(adapter.is_test_file("tests/simple.test.tsx"), true)
+  MiniTest.expect.equality(adapter.is_test_file("tests/simple.test.js"), true)
+  MiniTest.expect.equality(adapter.is_test_file("tests/simple.test.jsx"), true)
 end
 
 T["adapter.is_test_file"]["is false if the file ends with something else"] = function()
@@ -43,7 +40,7 @@ T["adapter.is_test_file"]["is false if the file ends with something else"] = fun
   MiniTest.expect.equality(adapter.is_test_file(path), false)
 end
 
-T["adapter.discover_positions"]["builds simple positions"] = function()
+T["adapter.discover_positions"]["tests/one-passed.test.ts"] = function()
   local tests_path = Helpers.getFixturePath("bun_tests/tests")
   child.cmd("cd " .. tests_path)
   child.lua([[
@@ -78,6 +75,67 @@ T["adapter.discover_positions"]["builds simple positions"] = function()
         name = "it works",
         path = "one-passed.test.ts",
         range = { 2, 0, 4, 2 },
+        type = "test",
+      },
+    },
+  })
+end
+
+T["adapter.discover_positions"]["tests/all-statuses.test.js"] = function()
+  local tests_path = Helpers.getFixturePath("bun_tests/tests")
+  child.cmd("cd " .. tests_path)
+  child.lua([[
+    require("nio").run(function()
+      local adapter = require("neotest-bun")
+      local test = "all-statuses.test.js"
+      local ok, err = pcall(function()
+        vim.b.result = adapter.discover_positions(test):to_list()
+      end)
+      if not ok then
+        vim.b.result = err
+      end
+    end)
+  ]])
+
+  Helpers.waitFor(function()
+    return child.b.result ~= vim.NIL
+  end, 1000)
+
+  MiniTest.expect.equality(child.b.result, {
+    {
+      id = "all-statuses.test.js",
+      name = "all-statuses.test.js",
+      path = "all-statuses.test.js",
+      range = { 0, 0, 13, 0 },
+      type = "file",
+    },
+    {
+      {
+        id = "all-statuses.test.js::pass",
+        is_parameterized = false,
+        name = "pass",
+        path = "all-statuses.test.js",
+        range = { 2, 0, 4, 2 },
+        type = "test",
+      },
+    },
+    {
+      {
+        id = "all-statuses.test.js::skip",
+        is_parameterized = false,
+        name = "skip",
+        path = "all-statuses.test.js",
+        range = { 6, 0, 8, 2 },
+        type = "test",
+      },
+    },
+    {
+      {
+        id = "all-statuses.test.js::fail",
+        is_parameterized = false,
+        name = "fail",
+        path = "all-statuses.test.js",
+        range = { 10, 0, 12, 2 },
         type = "test",
       },
     },

@@ -312,6 +312,7 @@ Helpers.waitForTestCompletion = function(child)
     -- print("\n\n\n")
     return total > 0 and running == 0
   end, 5000)
+  vim.uv.sleep(500)
 end
 
 return Helpers
