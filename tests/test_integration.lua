@@ -40,13 +40,25 @@ end
 T["integration"]["runs a single test inside a describe block"] = function()
   child.cmd("cd " .. Helpers.getFixturePath("bun_tests"))
   child.cmd("e tests/describe.test.ts")
-  -- `test("the test", ...)` lives on line 4.
-  child.api.nvim_win_set_cursor(0, { 4, 0 })
+  child.fn.search([[test("the test"]])
 
   Helpers.runNearestTest(child)
 
   local counts = Helpers.getStatusCounts(child)
   MiniTest.expect.equality(counts.passed, 1)
+  MiniTest.expect.equality(counts.failed, 0)
+end
+
+T["integration"]["escapes metacharacters when running a single test"] = function()
+  child.cmd("cd " .. Helpers.getFixturePath("bun_tests"))
+  child.cmd("e tests/metacharacters.test.ts")
+  child.fn.search([[test("returns 1\.5"]])
+
+  Helpers.runNearestTest(child)
+
+  local counts = Helpers.getStatusCounts(child)
+  MiniTest.expect.equality(counts.passed, 1)
+  MiniTest.expect.equality(counts.skipped, 1)
   MiniTest.expect.equality(counts.failed, 0)
 end
 

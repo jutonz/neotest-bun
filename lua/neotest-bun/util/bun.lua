@@ -19,21 +19,11 @@ function bun.isBunProject()
   return bun.fileExists(rootBunLock)
 end
 
+--- Escapes a test name for use as a bun `--test-name-pattern`, which bun
+--- treats as a regex. Unescaped metacharacters make the pattern select the
+--- wrong tests, or fail to match at all.
 function bun.escapeTestPattern(s)
-  return (
-    s:gsub("%(", "%\\(")
-      :gsub("%)", "%\\)")
-      :gsub("%]", "%\\]")
-      :gsub("%[", "%\\[")
-      :gsub("%*", "%\\*")
-      :gsub("%+", "%\\+")
-      :gsub("%-", "%\\-")
-      :gsub("%?", "%\\?")
-      :gsub("%$", "%\\$")
-      :gsub("%^", "%\\^")
-      :gsub("%/", "%\\/")
-      :gsub("%'", "%\\'")
-  )
+  return (s:gsub("[%^%$%.%|%?%*%+%(%)%[%]%{%}\\]", "\\%0"))
 end
 
 -- convert `{ status = "failed" }` into `{ { status = "falied" } }` so it can
