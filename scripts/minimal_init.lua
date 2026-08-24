@@ -36,7 +36,10 @@ require("lazy").setup({
         "nvim-neotest/nvim-nio",
         "nvim-lua/plenary.nvim",
         "antoinemadec/FixCursorHold.nvim",
-        "nvim-treesitter/nvim-treesitter",
+        -- Pinned to `master`: nvim-treesitter's default branch is now `main`,
+        -- a rewrite that drops `nvim-treesitter.configs` and requires nvim
+        -- 0.11+, which would break the 0.10.3 leg of the test matrix.
+        { "nvim-treesitter/nvim-treesitter", branch = "master" },
       },
     },
     {

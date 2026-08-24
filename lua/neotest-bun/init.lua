@@ -199,11 +199,13 @@ NeotestBun.build_spec = function(args)
     local testName = string.sub(pos.id, string.find(pos.id, "::") + 2)
     testName = string.gsub(testName, "::", " ")
     testNamePattern = bun.escapeTestPattern(testName)
-    testNamePattern = "^ " .. testNamePattern
+    -- bun matches this pattern against the describe/test names joined by a
+    -- space. Releases up to 1.2.20 prefixed that joined name with a leading
+    -- space; 1.2.23 and later do not. Match the space optionally so a single
+    -- test can be run on either.
+    testNamePattern = "^ ?" .. testNamePattern
     if pos.type == "test" then
       testNamePattern = testNamePattern .. "$"
-    else
-      testNamePattern = testNamePattern .. ""
     end
   end
 

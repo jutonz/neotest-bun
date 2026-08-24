@@ -2,7 +2,7 @@
 <testsuites name="bun test" tests="1" assertions="1" failures="1" skipped="0" time="1">
   <testsuite name="tests/single-failure.test.ts" file="tests/single-failure.test.ts" tests="1" assertions="1" failures="1" skipped="0" time="1" hostname="Justins-MacBook-Pro.local">
     <testcase name="it doesn&apos;t work" classname="" time="1" file="tests/single-failure.test.ts" line="3" assertions="1">
-      <failure type="AssertionError" />
+      <failure type="AssertionError" message="expect(received).toBe(expected)&#10;&#10;Expected: false&#10;Received: true&#10;">AssertionError: expect(received).toBe(expected)&#10;&#10;Expected: false&#10;Received: true&#10;&#10;      at tests/single-failure.test.ts:4:16&#10;</failure>
     </testcase>
   </testsuite>
 </testsuites>

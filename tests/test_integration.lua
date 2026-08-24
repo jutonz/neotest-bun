@@ -35,4 +35,19 @@ T["integration"]["tests/all-statuses.test.js"] = function()
   MiniTest.expect.reference_screenshot(screenshot, nil, { ignore_attr = true })
 end
 
+-- Guards against the `--test-name-pattern` bun builds for a single test not
+-- matching anything, which silently runs zero tests instead of failing loudly.
+T["integration"]["runs a single test inside a describe block"] = function()
+  child.cmd("cd " .. Helpers.getFixturePath("bun_tests"))
+  child.cmd("e tests/describe.test.ts")
+  -- `test("the test", ...)` lives on line 4.
+  child.api.nvim_win_set_cursor(0, { 4, 0 })
+
+  Helpers.runNearestTest(child)
+
+  local counts = Helpers.getStatusCounts(child)
+  MiniTest.expect.equality(counts.passed, 1)
+  MiniTest.expect.equality(counts.failed, 0)
+end
+
 return T
