@@ -2,13 +2,16 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
+# No C++ compiler: the typescript and javascript grammars ship only a C scanner.
+# No luarocks: the harness disables rocks (see scripts/minimal_init.lua).
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
     make \
     unzip \
     ca-certificates \
-    luarocks \
+    gcc \
+    libc6-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install neovim
@@ -18,15 +21,31 @@ RUN apt-get update && apt-get install -y software-properties-common && \
     apt-get install -y neovim && \
     rm -rf /var/lib/apt/lists/*
 
-# Install bun. Override with `--build-arg BUN_VERSION=x.y.z` to test another release.
-ARG BUN_VERSION=1.4.0
+# nvim-treesitter compiles parsers with this. Ordered before bun so that
+# bumping BUN_VERSION does not re-download it.
+ARG TREE_SITTER_VERSION=0.26.13
 ARG TARGETARCH
+RUN case "${TARGETARCH}" in \
+      arm64) TS_ARCH=linux-arm64 ;; \
+      amd64) TS_ARCH=linux-x64 ;; \
+      *) echo "unsupported arch: ${TARGETARCH}" >&2; exit 1 ;; \
+    esac \
+    && curl -fsSL --retry 3 --retry-delay 2 \
+    "https://github.com/tree-sitter/tree-sitter/releases/download/v${TREE_SITTER_VERSION}/tree-sitter-${TS_ARCH}.gz" \
+    -o /tmp/tree-sitter.gz \
+    && gunzip /tmp/tree-sitter.gz \
+    && chmod +x /tmp/tree-sitter \
+    && mv /tmp/tree-sitter /usr/local/bin/tree-sitter
+
+# Override with `--build-arg BUN_VERSION=x.y.z` to test another release. Kept
+# last: it is the argument that changes most often.
+ARG BUN_VERSION=1.4.0
 RUN case "${TARGETARCH}" in \
       arm64) BUN_ARCH=aarch64 ;; \
       amd64) BUN_ARCH=x64 ;; \
       *) echo "unsupported arch: ${TARGETARCH}" >&2; exit 1 ;; \
     esac \
-    && curl -fL \
+    && curl -fsSL --retry 3 --retry-delay 2 \
     "https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-${BUN_ARCH}.zip" \
     -o /tmp/bun.zip \
     && unzip /tmp/bun.zip -d /tmp/bun_unzipped \
@@ -36,10 +55,12 @@ ENV PATH="/opt/bun:${PATH}"
 
 WORKDIR /workspace
 
+# `make test-docker` bind-mounts over this; it matters only when the image is
+# run standalone.
 COPY . .
 
+# Must differ from the Makefile's default: host and container share ./tmp
+# through the bind mount, and their compiled parsers are not interchangeable.
 ENV NVIM_APPNAME=nvim-neotest-bun-test-docker
-
-RUN mkdir -p /tmp/nvim-test/.config /tmp/nvim-test/.local/share /tmp/nvim-test/.local/state /tmp/nvim-test/.cache
 
 CMD ["make", "test"]

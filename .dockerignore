@@ -1,0 +1,6 @@
+# Docker does not read .gitignore. Without this, host-built parsers and language
+# servers are baked into the image.
+.git/
+tmp/
+.ci/
+tests/fixtures/**/node_modules/

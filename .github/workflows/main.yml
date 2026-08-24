@@ -9,9 +9,11 @@ on:
 env:
   LUA_LS_VERSION: 3.7.4
   LUA_VERSION: 5.1
+  # Keep in sync with the Dockerfile.
+  TREE_SITTER_VERSION: 0.26.13
 
 concurrency:
-  group: github.head_ref
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -39,8 +41,7 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: v0.11.0
-          steps:
+          version: stable
 
       - uses: leafo/gh-actions-lua@v11
         with:
@@ -48,6 +49,7 @@ jobs:
 
       - uses: leafo/gh-actions-luarocks@v4
 
+      # Needs no tree-sitter-cli: the target skips the parser install.
       - name: generate documentation
         run: make documentation-ci
 
@@ -56,13 +58,8 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 1
-    strategy:
-      matrix:
-        # v0.10.3 dropped: nvim-treesitter's legacy `master` branch (the only
-        # one exposing the `configs` API this harness uses) no longer discovers
-        # TypeScript positions on it.
-        neovim_version: ['v0.11.7', 'v0.12.5']
+    # Headroom for cold gh-actions-lua builds, not for the parser build.
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v4
@@ -71,6 +68,12 @@ jobs:
 
       # setup-bun installs the latest release, so record which one the run used.
       - run: bun --version
+
+      - uses: tree-sitter/setup-action/cli@v2
+        with:
+          tree-sitter-ref: v${{ env.TREE_SITTER_VERSION }}
+
+      - run: tree-sitter --version
 
       - run: date +%F > todays-date
 
@@ -95,7 +98,9 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: ${{ matrix.neovim_version }}
+          # nvim-treesitter supports only the latest stable release;
+          # tests-nightly covers the other half of that policy.
+          version: stable
 
       - name: run luals
         run: |
@@ -113,12 +118,13 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: logs-nvim-${{ matrix.neovim_version }}
+          name: logs-nvim-stable
           path: tmp/.local/state/nvim-neotest-bun-test
 
   tests-nightly:
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    # Headroom for cold gh-actions-lua builds, not for the parser build.
+    timeout-minutes: 5
     continue-on-error: true
 
     steps:
@@ -128,6 +134,12 @@ jobs:
 
       # setup-bun installs the latest release, so record which one the run used.
       - run: bun --version
+
+      - uses: tree-sitter/setup-action/cli@v2
+        with:
+          tree-sitter-ref: v${{ env.TREE_SITTER_VERSION }}
+
+      - run: tree-sitter --version
 
       - run: date +%F > todays-date
 

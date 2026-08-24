@@ -1,4 +1,5 @@
 .SUFFIXES:
+.PHONY: all clean test test-ci test-docker documentation documentation-ci lint luals luals-ci
 
 all: documentation lint luals test
 
@@ -25,14 +26,20 @@ test-ci: test
 # runs tests in Docker container.
 # Override the bun release under test with `make test-docker BUN_VERSION=1.3.2`.
 BUN_VERSION ?= 1.4.0
+TREE_SITTER_VERSION ?= 0.26.13
+DOCKER_TAG = neotest-bun-test:bun-$(BUN_VERSION)-ts-$(TREE_SITTER_VERSION)
 
 test-docker:
-	docker build --build-arg BUN_VERSION=$(BUN_VERSION) -t neotest-bun-test:bun-$(BUN_VERSION) . \
-		&& docker run --rm -v $$(pwd):/workspace neotest-bun-test:bun-$(BUN_VERSION)
+	docker build \
+		--build-arg BUN_VERSION=$(BUN_VERSION) \
+		--build-arg TREE_SITTER_VERSION=$(TREE_SITTER_VERSION) \
+		-t $(DOCKER_TAG) . \
+		&& docker run --rm -v $$(pwd):/workspace $(DOCKER_TAG)
 
 # generates the documentation.
 documentation:
 	mkdir -p ./tmp
+	NEOTEST_BUN_SKIP_PARSERS=1 \
 	NVIM_APPNAME=nvim-neotest-bun-test \
 	XDG_CONFIG_HOME=$$(pwd)/tmp/.config \
 	XDG_DATA_HOME=$$(pwd)/tmp/.local/share \
@@ -57,5 +64,5 @@ luals-ci:
 
 luals:
 	mkdir -p .ci/lua-ls
-	curl -sL "https://github.com/LuaLS/lua-language-server/releases/download/3.7.4/lua-language-server-3.7.4-darwin-x64.tar.gz" | tar xzf - -C "${PWD}/.ci/lua-ls"
+	curl -fsSL "https://github.com/LuaLS/lua-language-server/releases/download/3.7.4/lua-language-server-3.7.4-darwin-x64.tar.gz" | tar xzf - -C "${PWD}/.ci/lua-ls"
 	make luals-ci

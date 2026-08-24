@@ -36,11 +36,17 @@ require("lazy").setup({
         "nvim-neotest/nvim-nio",
         "nvim-lua/plenary.nvim",
         "antoinemadec/FixCursorHold.nvim",
-        -- Pinned to `master`: nvim-treesitter's default branch is now `main`,
-        -- a rewrite that drops `nvim-treesitter.configs` and requires nvim
-        -- 0.11+, which would break the 0.10.3 leg of the test matrix.
-        { "nvim-treesitter/nvim-treesitter", branch = "master" },
       },
+    },
+    -- Not a neotest dependency: this is here only to compile the parsers the
+    -- adapter's queries need. Requires nvim 0.12+, tree-sitter-cli and a C
+    -- compiler. `build` is off because `:TSUpdate` is fire-and-forget and
+    -- would race the awaited install below.
+    {
+      "nvim-treesitter/nvim-treesitter",
+      branch = "main",
+      lazy = false,
+      build = false,
     },
     {
       "echasnovski/mini.nvim",
@@ -60,11 +66,22 @@ require("lazy").setup({
 
 require("lazy").install({ wait = true })
 
--- Ensure required treesitter parsers are installed
-require("nvim-treesitter.configs").setup({
-  ensure_installed = { "typescript", "javascript" },
-  sync_install = true,
-})
+local function install_parsers()
+  -- Only advances while the event loop runs, so it must be waited on. Reports a
+  -- failed download or compile by returning false, and raises only on timeout.
+  local ok, installed = pcall(function()
+    return require("nvim-treesitter").install({ "typescript", "javascript" }):wait(120000)
+  end)
+
+  if not ok or installed == false then
+    io.stderr:write("failed to install treesitter parsers: " .. tostring(installed) .. "\n")
+    os.exit(1)
+  end
+end
+
+if vim.env.NEOTEST_BUN_SKIP_PARSERS ~= "1" then
+  install_parsers()
+end
 
 vim.opt.swapfile = false
 vim.o.statusline = "%<%f %l,%c%V"
