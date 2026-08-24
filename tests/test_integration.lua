@@ -40,7 +40,9 @@ end
 T["integration"]["runs a single test inside a describe block"] = function()
   child.cmd("cd " .. Helpers.getFixturePath("bun_tests"))
   child.cmd("e tests/describe.test.ts")
-  child.fn.search([[test("the test"]])
+  -- A failed search leaves the cursor on line 1, which silently runs the whole
+  -- file instead of the nearest test, so assert it landed on something.
+  MiniTest.expect.no_equality(child.fn.search([[test("the test"]]), 0)
 
   Helpers.runNearestTest(child)
 
@@ -52,7 +54,7 @@ end
 T["integration"]["escapes metacharacters when running a single test"] = function()
   child.cmd("cd " .. Helpers.getFixturePath("bun_tests"))
   child.cmd("e tests/metacharacters.test.ts")
-  child.fn.search([[test("returns 1\.5"]])
+  MiniTest.expect.no_equality(child.fn.search([[test("returns 1\.5"]]), 0)
 
   Helpers.runNearestTest(child)
 
