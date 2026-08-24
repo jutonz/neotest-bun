@@ -20,6 +20,7 @@ local T = MiniTest.new_set({
 T["bun.fileExists()"] = MiniTest.new_set()
 T["bun.isBunProject()"] = MiniTest.new_set()
 T["bun.ensureIsSequence()"] = MiniTest.new_set()
+T["bun.escapeTestPattern()"] = MiniTest.new_set()
 T["bun.parseClassname()"] = MiniTest.new_set()
 T["bun.xmlToResults()"] = MiniTest.new_set()
 
@@ -60,6 +61,39 @@ end
 T["bun.ensureIsSequence()"]["if the argument is already a sequence of tables, does nothing"] = function()
   local sequenceOfTables = { { status = "passed" }, { status = "failed" } }
   MiniTest.expect.equality(sequenceOfTables, bun.ensureIsSequence(sequenceOfTables))
+end
+
+-- bun treats --test-name-pattern as a regex, so a name containing a
+-- metacharacter must be escaped or it selects the wrong tests -- or none.
+T["bun.escapeTestPattern()"]["escapes regex metacharacters"] = function()
+  local cases = {
+    { "handles (parens)", "handles \\(parens\\)" },
+    { "a|b", "a\\|b" },
+    { "returns 1.5", "returns 1\\.5" },
+    { "repeat x{2}", "repeat x\\{2\\}" },
+    { "maybe?", "maybe\\?" },
+    { "star*", "star\\*" },
+    { "plus+", "plus\\+" },
+    { "[bracket]", "\\[bracket\\]" },
+    { "caret^inside", "caret\\^inside" },
+    { "dollar$sign", "dollar\\$sign" },
+    { "back\\slash", "back\\\\slash" },
+  }
+
+  for _, case in ipairs(cases) do
+    local name, expected = case[1], case[2]
+    MiniTest.expect.equality(bun.escapeTestPattern(name), expected)
+  end
+end
+
+-- Escaping these relies on identity escapes that stricter regex engines reject,
+-- and none of them are metacharacters.
+T["bun.escapeTestPattern()"]["leaves non-metacharacters alone"] = function()
+  local cases = { "it doesn't work", "path/to/thing", "dash-case", "plain name" }
+
+  for _, name in ipairs(cases) do
+    MiniTest.expect.equality(bun.escapeTestPattern(name), name)
+  end
 end
 
 T["bun.parseClassname()"]["handles nested describe blocks"] = function()
@@ -132,6 +166,32 @@ T["bun.xmlToResults()"]["handles output with two testsuites"] = function()
     [root .. "/tests/two-testsuites.test.ts::second suite::second test"] = {
       status = "skipped",
     },
+  }
+  MiniTest.expect.equality(expected, results)
+end
+
+T["bun.xmlToResults()"]["reports every status in a single testsuite"] = function()
+  local xml = Helpers.readFixtureFile("junit/all-statuses.test.js.xml")
+  local root = "/root/path"
+
+  local results = bun.xmlToResults(root, xml)
+
+  local expected = {
+    [root .. "/tests/all-statuses.test.js::pass"] = { status = "passed" },
+    [root .. "/tests/all-statuses.test.js::skip"] = { status = "skipped" },
+    [root .. "/tests/all-statuses.test.js::fail"] = { status = "failed" },
+  }
+  MiniTest.expect.equality(expected, results)
+end
+
+T["bun.xmlToResults()"]["handles the empty failure element older bun emits"] = function()
+  local xml = Helpers.readFixtureFile("junit/legacy-empty-failure.xml")
+  local root = "/root/path"
+
+  local results = bun.xmlToResults(root, xml)
+
+  local expected = {
+    [root .. "/tests/single-failure.test.ts::it doesn't work"] = { status = "failed" },
   }
   MiniTest.expect.equality(expected, results)
 end

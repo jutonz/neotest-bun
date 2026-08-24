@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="bun test" tests="2" assertions="2" failures="0" skipped="0" time="1">
+  <testsuite name="tests/metacharacters.test.ts" file="tests/metacharacters.test.ts" tests="2" assertions="2" failures="0" skipped="0" time="1" hostname="Justins-MacBook-Pro.local">
+    <testcase name="returns 1.5" classname="" time="1" file="tests/metacharacters.test.ts" line="5" assertions="1" />
+    <testcase name="returns 1X5" classname="" time="1" file="tests/metacharacters.test.ts" line="9" assertions="1" />
+  </testsuite>
+</testsuites>
