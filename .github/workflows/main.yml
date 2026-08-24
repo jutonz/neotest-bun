@@ -59,7 +59,10 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        neovim_version: ['v0.10.3', 'v0.11.5']
+        # v0.10.3 dropped: nvim-treesitter's legacy `master` branch (the only
+        # one exposing the `configs` API this harness uses) no longer discovers
+        # TypeScript positions on it.
+        neovim_version: ['v0.11.5', 'v0.12.5']
 
     steps:
       - uses: actions/checkout@v4
