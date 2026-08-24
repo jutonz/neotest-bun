@@ -22,9 +22,13 @@ test:
 
 test-ci: test
 
-# runs tests in Docker container
+# runs tests in Docker container.
+# Override the bun release under test with `make test-docker BUN_VERSION=1.3.2`.
+BUN_VERSION ?= 1.4.0
+
 test-docker:
-	docker build -t neotest-bun-test . && docker run --rm -v $$(pwd):/workspace neotest-bun-test
+	docker build --build-arg BUN_VERSION=$(BUN_VERSION) -t neotest-bun-test:bun-$(BUN_VERSION) . \
+		&& docker run --rm -v $$(pwd):/workspace neotest-bun-test:bun-$(BUN_VERSION)
 
 # generates the documentation.
 documentation:

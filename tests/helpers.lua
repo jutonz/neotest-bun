@@ -257,6 +257,38 @@ Helpers.runCurrentTestFile = function(child)
   MiniTest.expect.equality(child.b.err, false)
 end
 
+-- Runs just the test under the cursor, which makes neotest pass bun a
+-- `--test-name-pattern`. Running a whole file does not, so only this exercises
+-- the pattern against a real bun.
+Helpers.runNearestTest = function(child)
+  Helpers.setupNeotest(child)
+
+  child.b.err = false
+  child.lua([[
+    require("nio").run(function()
+      local ok, err = pcall(function()
+        require("neotest").run.run()
+      end)
+
+      if not ok then
+        vim.b.err = err
+      end
+    end)
+  ]])
+
+  Helpers.waitForTestCompletion(child)
+  MiniTest.expect.equality(child.b.err, false)
+end
+
+Helpers.getStatusCounts = function(child)
+  child.lua([[
+    local adapter = require("neotest").state.adapter_ids()[1]
+    vim.b.__status_counts = require("neotest").state.status_counts(adapter)
+  ]])
+
+  return child.b.__status_counts
+end
+
 Helpers.setupNeotest = function(child)
   child.lua([[
     require("neotest").setup({

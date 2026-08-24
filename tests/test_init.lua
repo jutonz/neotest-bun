@@ -217,4 +217,62 @@ T["adapter.build_spec"]["includes additional_args from config"] = function()
   MiniTest.expect.equality(vim.tbl_contains(command, "--some-arg"), true)
 end
 
+-- bun matches --test-name-pattern against the describe/test names joined by a
+-- space. Releases up to 1.2.20 prefixed that with a leading space, 1.2.23+ does
+-- not, so the pattern has to treat that space as optional.
+local buildPatternFor = function(child, fixture, posType)
+  child.b.path = Helpers.getFixturePath(fixture)
+  child.b.posType = posType
+
+  child.lua([[
+    local ok, err = pcall(function()
+      require("nio").run(function()
+        local adapter = require("neotest-bun")
+        local positions = adapter.discover_positions(vim.b.path):to_list()
+        local Tree = require("neotest.types").Tree
+        local tree = Tree.from_list(positions, function(pos)
+          return pos.id
+        end)
+
+        local target
+        for _, node in tree:iter_nodes() do
+          if node:data().type == vim.b.posType then
+            target = node
+          end
+        end
+
+        local spec = adapter.build_spec({ tree = target })
+        vim.b.command = spec.command
+      end)
+    end)
+
+    if not ok then
+      vim.b.err = err
+    end
+  ]])
+
+  Helpers.waitFor(function()
+    return child.b.command ~= vim.NIL or child.b.err ~= vim.NIL
+  end, 2000)
+
+  MiniTest.expect.equality(child.b.err, vim.NIL)
+
+  for _, arg in ipairs(child.b.command) do
+    local pattern = arg:match("^%-%-test%-name%-pattern=(.*)$")
+    if pattern then
+      return pattern
+    end
+  end
+end
+
+T["adapter.build_spec"]["makes the leading space optional for a test"] = function()
+  local pattern = buildPatternFor(child, "bun_tests/tests/describe.test.ts", "test")
+  MiniTest.expect.equality(pattern, "^ ?the describe block the test$")
+end
+
+T["adapter.build_spec"]["makes the leading space optional for a namespace"] = function()
+  local pattern = buildPatternFor(child, "bun_tests/tests/describe.test.ts", "namespace")
+  MiniTest.expect.equality(pattern, "^ ?the describe block")
+end
+
 return T
