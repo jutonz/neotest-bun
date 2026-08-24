@@ -39,7 +39,7 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: v0.11.0
+          version: v0.12.5
           steps:
 
       - uses: leafo/gh-actions-lua@v11
@@ -47,6 +47,9 @@ jobs:
           luaVersion: ${{ env.LUA_VERSION }}
 
       - uses: leafo/gh-actions-luarocks@v4
+
+      # nvim-treesitter's `main` branch compiles parsers with tree-sitter-cli.
+      - uses: tree-sitter/setup-action/cli@v2
 
       - name: generate documentation
         run: make documentation-ci
@@ -56,13 +59,15 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    # Parsers are compiled from source on each run.
+    timeout-minutes: 5
     strategy:
       matrix:
-        # v0.10.3 dropped: nvim-treesitter's legacy `master` branch (the only
-        # one exposing the `configs` API this harness uses) no longer discovers
-        # TypeScript positions on it.
-        neovim_version: ['v0.11.7', 'v0.12.5']
+        # nvim-treesitter's `main` branch requires nvim 0.12+, so 0.11 and
+        # earlier are no longer testable. Upstream supports latest stable and
+        # latest nightly only, which is what this matrix plus tests-nightly
+        # covers.
+        neovim_version: ['v0.12.5']
 
     steps:
       - uses: actions/checkout@v4
@@ -71,6 +76,9 @@ jobs:
 
       # setup-bun installs the latest release, so record which one the run used.
       - run: bun --version
+
+      # nvim-treesitter's `main` branch compiles parsers with tree-sitter-cli.
+      - uses: tree-sitter/setup-action/cli@v2
 
       - run: date +%F > todays-date
 
@@ -118,7 +126,8 @@ jobs:
 
   tests-nightly:
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    # Parsers are compiled from source on each run.
+    timeout-minutes: 5
     continue-on-error: true
 
     steps:
@@ -128,6 +137,9 @@ jobs:
 
       # setup-bun installs the latest release, so record which one the run used.
       - run: bun --version
+
+      # nvim-treesitter's `main` branch compiles parsers with tree-sitter-cli.
+      - uses: tree-sitter/setup-action/cli@v2
 
       - run: date +%F > todays-date
 

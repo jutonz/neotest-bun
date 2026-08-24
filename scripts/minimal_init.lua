@@ -36,10 +36,14 @@ require("lazy").setup({
         "nvim-neotest/nvim-nio",
         "nvim-lua/plenary.nvim",
         "antoinemadec/FixCursorHold.nvim",
-        -- Pinned to `master`: nvim-treesitter's default branch is now `main`,
-        -- a rewrite that drops `nvim-treesitter.configs` and requires nvim
-        -- 0.11+, which would break the 0.10.3 leg of the test matrix.
-        { "nvim-treesitter/nvim-treesitter", branch = "master" },
+        -- `main` is a full rewrite of nvim-treesitter. It requires nvim 0.12+,
+        -- tree-sitter-cli, and a C compiler, and does not support lazy-loading.
+        {
+          "nvim-treesitter/nvim-treesitter",
+          branch = "main",
+          lazy = false,
+          build = ":TSUpdate",
+        },
       },
     },
     {
@@ -60,11 +64,9 @@ require("lazy").setup({
 
 require("lazy").install({ wait = true })
 
--- Ensure required treesitter parsers are installed
-require("nvim-treesitter.configs").setup({
-  ensure_installed = { "typescript", "javascript" },
-  sync_install = true,
-})
+-- Ensure required treesitter parsers are installed. `install` is asynchronous,
+-- so wait on it: the tests parse TypeScript/JavaScript as soon as they start.
+require("nvim-treesitter").install({ "typescript", "javascript" }):wait(300000)
 
 vim.opt.swapfile = false
 vim.o.statusline = "%<%f %l,%c%V"

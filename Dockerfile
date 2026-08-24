@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     ca-certificates \
     luarocks \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Install neovim
@@ -33,6 +34,20 @@ RUN case "${TARGETARCH}" in \
     && mv "/tmp/bun_unzipped/bun-linux-${BUN_ARCH}" /opt/bun \
     && rm -r /tmp/bun.zip /tmp/bun_unzipped
 ENV PATH="/opt/bun:${PATH}"
+
+# nvim-treesitter's `main` branch compiles parsers with tree-sitter-cli.
+ARG TREE_SITTER_VERSION=0.26.13
+RUN case "${TARGETARCH}" in \
+      arm64) TS_ARCH=linux-arm64 ;; \
+      amd64) TS_ARCH=linux-x64 ;; \
+      *) echo "unsupported arch: ${TARGETARCH}" >&2; exit 1 ;; \
+    esac \
+    && curl -fL \
+    "https://github.com/tree-sitter/tree-sitter/releases/download/v${TREE_SITTER_VERSION}/tree-sitter-${TS_ARCH}.gz" \
+    -o /tmp/tree-sitter.gz \
+    && gunzip /tmp/tree-sitter.gz \
+    && chmod +x /tmp/tree-sitter \
+    && mv /tmp/tree-sitter /usr/local/bin/tree-sitter
 
 WORKDIR /workspace
 
