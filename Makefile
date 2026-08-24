@@ -33,6 +33,7 @@ test-docker:
 # generates the documentation.
 documentation:
 	mkdir -p ./tmp
+	NEOTEST_BUN_SKIP_PARSERS=1 \
 	NVIM_APPNAME=nvim-neotest-bun-test \
 	XDG_CONFIG_HOME=$$(pwd)/tmp/.config \
 	XDG_DATA_HOME=$$(pwd)/tmp/.local/share \

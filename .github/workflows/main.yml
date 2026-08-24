@@ -9,9 +9,11 @@ on:
 env:
   LUA_LS_VERSION: 3.7.4
   LUA_VERSION: 5.1
+  # nvim-treesitter `main` requires >= 0.26.1. Keep in sync with the Dockerfile.
+  TREE_SITTER_VERSION: 0.26.13
 
 concurrency:
-  group: github.head_ref
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -39,8 +41,7 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: v0.12.5
-          steps:
+          version: stable
 
       - uses: leafo/gh-actions-lua@v11
         with:
@@ -48,9 +49,8 @@ jobs:
 
       - uses: leafo/gh-actions-luarocks@v4
 
-      # nvim-treesitter's `main` branch compiles parsers with tree-sitter-cli.
-      - uses: tree-sitter/setup-action/cli@v2
-
+      # No tree-sitter-cli step here: the documentation target skips the parser
+      # install, since mini.doc parses nothing.
       - name: generate documentation
         run: make documentation-ci
 
@@ -59,15 +59,9 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    # Parsers are compiled from source on each run.
+    # 1 minute was already marginal before parsers were built from source
+    # (52s observed), and a cold gh-actions-lua build can add ~30s.
     timeout-minutes: 5
-    strategy:
-      matrix:
-        # nvim-treesitter's `main` branch requires nvim 0.12+, so 0.11 and
-        # earlier are no longer testable. Upstream supports latest stable and
-        # latest nightly only, which is what this matrix plus tests-nightly
-        # covers.
-        neovim_version: ['v0.12.5']
 
     steps:
       - uses: actions/checkout@v4
@@ -79,6 +73,10 @@ jobs:
 
       # nvim-treesitter's `main` branch compiles parsers with tree-sitter-cli.
       - uses: tree-sitter/setup-action/cli@v2
+        with:
+          tree-sitter-ref: v${{ env.TREE_SITTER_VERSION }}
+
+      - run: tree-sitter --version
 
       - run: date +%F > todays-date
 
@@ -103,7 +101,10 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: ${{ matrix.neovim_version }}
+          # nvim-treesitter `main` requires nvim 0.12+ and supports only the
+          # latest stable release; tests-nightly covers the other half of that
+          # policy. Tracking `stable` keeps this from silently going stale.
+          version: stable
 
       - name: run luals
         run: |
@@ -121,7 +122,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: logs-nvim-${{ matrix.neovim_version }}
+          name: logs-nvim-stable
           path: tmp/.local/state/nvim-neotest-bun-test
 
   tests-nightly:
@@ -140,6 +141,10 @@ jobs:
 
       # nvim-treesitter's `main` branch compiles parsers with tree-sitter-cli.
       - uses: tree-sitter/setup-action/cli@v2
+        with:
+          tree-sitter-ref: v${{ env.TREE_SITTER_VERSION }}
+
+      - run: tree-sitter --version
 
       - run: date +%F > todays-date
 

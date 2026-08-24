@@ -36,15 +36,19 @@ require("lazy").setup({
         "nvim-neotest/nvim-nio",
         "nvim-lua/plenary.nvim",
         "antoinemadec/FixCursorHold.nvim",
-        -- `main` is a full rewrite of nvim-treesitter. It requires nvim 0.12+,
-        -- tree-sitter-cli, and a C compiler, and does not support lazy-loading.
-        {
-          "nvim-treesitter/nvim-treesitter",
-          branch = "main",
-          lazy = false,
-          build = ":TSUpdate",
-        },
       },
+    },
+    -- Not a neotest dependency -- neotest uses Neovim's built-in treesitter.
+    -- This is here only to compile the TypeScript/JavaScript parsers the
+    -- adapter's queries need. `main` is a full rewrite: it requires nvim 0.12+,
+    -- tree-sitter-cli and a C compiler, and does not support lazy-loading.
+    -- `build` is off because the awaited `install()` below is what this harness
+    -- relies on; `:TSUpdate` is fire-and-forget and would race it.
+    {
+      "nvim-treesitter/nvim-treesitter",
+      branch = "main",
+      lazy = false,
+      build = false,
     },
     {
       "echasnovski/mini.nvim",
@@ -64,9 +68,23 @@ require("lazy").setup({
 
 require("lazy").install({ wait = true })
 
--- Ensure required treesitter parsers are installed. `install` is asynchronous,
--- so wait on it: the tests parse TypeScript/JavaScript as soon as they start.
-require("nvim-treesitter").install({ "typescript", "javascript" }):wait(300000)
+-- Ensure the treesitter parsers the adapter's queries need are installed.
+-- `install` only advances while the event loop runs, so it has to be waited on
+-- before the tests start parsing. It reports a failed download or compile by
+-- returning false rather than raising, and raises only on timeout -- handle
+-- both, or a broken parser surfaces much later as unexplained parse errors.
+--
+-- Documentation generation parses nothing, so it opts out via
+-- NEOTEST_BUN_SKIP_PARSERS rather than needing tree-sitter-cli and a compiler.
+if vim.env.NEOTEST_BUN_SKIP_PARSERS ~= "1" then
+  local ok, installed = pcall(function()
+    return require("nvim-treesitter").install({ "typescript", "javascript" }):wait(120000)
+  end)
+  if not ok or installed == false then
+    io.stderr:write("failed to install treesitter parsers: " .. tostring(installed) .. "\n")
+    os.exit(1)
+  end
+end
 
 vim.opt.swapfile = false
 vim.o.statusline = "%<%f %l,%c%V"
