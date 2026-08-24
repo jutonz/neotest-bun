@@ -1,0 +1,6 @@
+# Docker does not read .gitignore. Without this the build context is ~169MB and
+# bakes host-built (macOS) parsers and language servers into a Linux image.
+.git/
+tmp/
+.ci/
+tests/fixtures/**/node_modules/
