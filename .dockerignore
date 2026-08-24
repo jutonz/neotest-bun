@@ -1,5 +1,5 @@
-# Docker does not read .gitignore. Without this the build context is ~169MB and
-# bakes host-built (macOS) parsers and language servers into a Linux image.
+# Docker does not read .gitignore. Without this, host-built parsers and language
+# servers are baked into the image.
 .git/
 tmp/
 .ci/

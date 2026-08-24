@@ -2,9 +2,8 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# `gcc`/`libc6-dev` rather than `build-essential`: the typescript and javascript
-# grammars ship only a C scanner, so no C++ compiler is needed. luarocks is not
-# installed because the harness disables rocks (see scripts/minimal_init.lua).
+# No C++ compiler: the typescript and javascript grammars ship only a C scanner.
+# No luarocks: the harness disables rocks (see scripts/minimal_init.lua).
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
@@ -22,8 +21,8 @@ RUN apt-get update && apt-get install -y software-properties-common && \
     apt-get install -y neovim && \
     rm -rf /var/lib/apt/lists/*
 
-# nvim-treesitter's `main` branch compiles parsers with tree-sitter-cli.
-# Installed before bun so that bumping BUN_VERSION does not re-download it.
+# nvim-treesitter compiles parsers with this. Ordered before bun so that
+# bumping BUN_VERSION does not re-download it.
 ARG TREE_SITTER_VERSION=0.26.13
 ARG TARGETARCH
 RUN case "${TARGETARCH}" in \
@@ -38,8 +37,8 @@ RUN case "${TARGETARCH}" in \
     && chmod +x /tmp/tree-sitter \
     && mv /tmp/tree-sitter /usr/local/bin/tree-sitter
 
-# Install bun. Override with `--build-arg BUN_VERSION=x.y.z` to test another
-# release. Kept last: it is the argument that changes most often.
+# Override with `--build-arg BUN_VERSION=x.y.z` to test another release. Kept
+# last: it is the argument that changes most often.
 ARG BUN_VERSION=1.4.0
 RUN case "${TARGETARCH}" in \
       arm64) BUN_ARCH=aarch64 ;; \
@@ -56,13 +55,12 @@ ENV PATH="/opt/bun:${PATH}"
 
 WORKDIR /workspace
 
-# `make test-docker` bind-mounts the working tree over this, so the copy only
-# matters when running the image standalone.
+# `make test-docker` bind-mounts over this; it matters only when the image is
+# run standalone.
 COPY . .
 
-# Deliberately distinct from the Makefile's default appname: host and container
-# share ./tmp through the bind mount, and this keeps macOS and Linux parser .so
-# files in separate trees.
+# Must differ from the Makefile's default: host and container share ./tmp
+# through the bind mount, and their compiled parsers are not interchangeable.
 ENV NVIM_APPNAME=nvim-neotest-bun-test-docker
 
 CMD ["make", "test"]

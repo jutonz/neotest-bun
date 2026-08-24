@@ -38,12 +38,10 @@ require("lazy").setup({
         "antoinemadec/FixCursorHold.nvim",
       },
     },
-    -- Not a neotest dependency -- neotest uses Neovim's built-in treesitter.
-    -- This is here only to compile the TypeScript/JavaScript parsers the
-    -- adapter's queries need. `main` is a full rewrite: it requires nvim 0.12+,
-    -- tree-sitter-cli and a C compiler, and does not support lazy-loading.
-    -- `build` is off because the awaited `install()` below is what this harness
-    -- relies on; `:TSUpdate` is fire-and-forget and would race it.
+    -- Not a neotest dependency: this is here only to compile the parsers the
+    -- adapter's queries need. Requires nvim 0.12+, tree-sitter-cli and a C
+    -- compiler. `build` is off because `:TSUpdate` is fire-and-forget and
+    -- would race the awaited install below.
     {
       "nvim-treesitter/nvim-treesitter",
       branch = "main",
@@ -68,22 +66,21 @@ require("lazy").setup({
 
 require("lazy").install({ wait = true })
 
--- Ensure the treesitter parsers the adapter's queries need are installed.
--- `install` only advances while the event loop runs, so it has to be waited on
--- before the tests start parsing. It reports a failed download or compile by
--- returning false rather than raising, and raises only on timeout -- handle
--- both, or a broken parser surfaces much later as unexplained parse errors.
---
--- Documentation generation parses nothing, so it opts out via
--- NEOTEST_BUN_SKIP_PARSERS rather than needing tree-sitter-cli and a compiler.
-if vim.env.NEOTEST_BUN_SKIP_PARSERS ~= "1" then
+local function install_parsers()
+  -- Only advances while the event loop runs, so it must be waited on. Reports a
+  -- failed download or compile by returning false, and raises only on timeout.
   local ok, installed = pcall(function()
     return require("nvim-treesitter").install({ "typescript", "javascript" }):wait(120000)
   end)
+
   if not ok or installed == false then
     io.stderr:write("failed to install treesitter parsers: " .. tostring(installed) .. "\n")
     os.exit(1)
   end
+end
+
+if vim.env.NEOTEST_BUN_SKIP_PARSERS ~= "1" then
+  install_parsers()
 end
 
 vim.opt.swapfile = false
